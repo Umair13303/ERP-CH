@@ -11,52 +11,52 @@ public partial class ERPOrganisationSetupContext : DbContext
     {
     }
 
-    public virtual DbSet<IRight> IRights { get; set; }
+    public virtual DbSet<vRight> vRights { get; set; }
 
-    public virtual DbSet<OSBranch> OSBranches { get; set; }
+    public virtual DbSet<ACBranch> ACBranches { get; set; }
 
-    public virtual DbSet<OSCompany> OSCompanies { get; set; }
+    public virtual DbSet<ACCompany> ACCompanies { get; set; }
 
-    public virtual DbSet<OSUser> OSUsers { get; set; }
+    public virtual DbSet<ACUser> ACUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<IRight>(entity =>
+        modelBuilder.Entity<vRight>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToView("IRight");
+                .ToView("vRight");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
-        modelBuilder.Entity<OSBranch>(entity =>
+        modelBuilder.Entity<ACBranch>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("OSBranch");
+                .ToTable("ACBranch");
 
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<OSCompany>(entity =>
+        modelBuilder.Entity<ACCompany>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("OSCompany");
+                .ToTable("ACCompany");
 
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<OSUser>(entity =>
+        modelBuilder.Entity<ACUser>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("OSUser");
+                .ToTable("ACUser");
 
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();

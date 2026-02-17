@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OrganisationSetup.Models.DAL;
 
-public partial class OSCompany
+public partial class ACCompany
 {
     public int Id { get; set; }
 

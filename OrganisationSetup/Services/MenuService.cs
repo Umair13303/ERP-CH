@@ -22,7 +22,7 @@ namespace OrganisationSetup.Services
             {
                 return new List<VMMenu>();
             }
-            var rightList = await _context.IRights.AsNoTracking().ToListAsync();
+            var rightList = await _context.vRights.AsNoTracking().ToListAsync();
             return rightList
                 .Where(r => !string.IsNullOrEmpty(r.RoleIds) &&
                             r.RoleIds.Split(',').Contains(userInfo.RoleId))

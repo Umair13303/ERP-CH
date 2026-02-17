@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OrganisationSetup.Models.DAL;
 
-public partial class OSBranch
+public partial class ACUser
 {
     public int Id { get; set; }
 
@@ -13,21 +13,21 @@ public partial class OSBranch
 
     public string? Description { get; set; }
 
-    public int? CampusTypeId { get; set; }
-
-    public int? OrganizationTypeId { get; set; }
-
-    public int? CountryId { get; set; }
-
-    public int? CityId { get; set; }
-
-    public string? Address { get; set; }
-
-    public string? Contact { get; set; }
+    public string? Password { get; set; }
 
     public string? Email { get; set; }
 
-    public string? NTNNumber { get; set; }
+    public string? Contact { get; set; }
+
+    public int? EmployeeId { get; set; }
+
+    public int? RoleId { get; set; }
+
+    public string? AllowedBranchIds { get; set; }
+
+    public bool? IsLogIn { get; set; }
+
+    public bool? IsDeveloper { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 

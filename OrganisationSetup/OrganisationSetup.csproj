@@ -9,6 +9,9 @@
   <ItemGroup>
     <Folder Include="Areas\AOSUser\Data\" />
     <Folder Include="Areas\AOSUser\Models\DAL\" />
+    <Folder Include="Areas\ApplicationConfiguration\Data\" />
+    <Folder Include="Areas\ApplicationConfiguration\Models\" />
+    <Folder Include="Areas\ApplicationConfiguration\Views\" />
   </ItemGroup>
 
   <ItemGroup>

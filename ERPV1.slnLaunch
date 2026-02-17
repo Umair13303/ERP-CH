@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "RUN-COMPLETE-PROJECT",
+    "Projects": [
+      {
+        "Path": "GateWay\\GateWay.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "OrganisationSetup\\OrganisationSetup.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "IMSClothHouse\\IMSClothHouse.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

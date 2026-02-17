@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OrganisationSetup.Models.DAL;
 
-public partial class IRight
+public partial class vRight
 {
     public int Id { get; set; }
 

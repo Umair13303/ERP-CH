@@ -42,18 +42,18 @@ namespace OrganisationSetup.Areas.OSAUser.Controllers
 
         #region PORTION CONTAIN CODE FOR : DATABASE OPERATION
         [HttpPost]
-        public async Task<IActionResult> OSULoginValidate(OSUser postedData)
+        public async Task<IActionResult> OSULoginValidate(ACUser postedData)
         {
             if (string.IsNullOrEmpty(postedData.Description) || string.IsNullOrEmpty(postedData.Password))
             {
                 ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.ServerResponse((int?)Code.NotFound));
                 return View(nameof(OSULogin), postedData);
             }
-            var user = await _eRPOSContext.OSUsers.FirstOrDefaultAsync(u => u.Description == postedData.Description && u.Password == postedData.Password);
+            var user = await _eRPOSContext.ACUsers.FirstOrDefaultAsync(u => u.Description == postedData.Description && u.Password == postedData.Password);
             if (user != null)
             {
-                var company = await _eRPOSContext.OSCompanies.FirstOrDefaultAsync(c => c.Id == user.CompanyId);
-                var branch = await _eRPOSContext.OSBranches.FirstOrDefaultAsync(b => b.Id == user.BranchId);
+                var company = await _eRPOSContext.ACCompanies.FirstOrDefaultAsync(c => c.Id == user.CompanyId);
+                var branch = await _eRPOSContext.ACBranches.FirstOrDefaultAsync(b => b.Id == user.BranchId);
                 #region IN CASE: USER LOGIN SUCCESS -- GET RIGHTS
                 if (user != null)
                 {
@@ -76,7 +76,7 @@ namespace OrganisationSetup.Areas.OSAUser.Controllers
             return View(nameof(OSULogin), postedData);
         }
         #endregion
-        private string GenerateJwtToken(OSUser user, string? companyName)
+        private string GenerateJwtToken(ACUser user, string? companyName)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!));
