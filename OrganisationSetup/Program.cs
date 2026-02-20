@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OrganisationSetup.Interfaces.ApplicationConfiguration;
 using OrganisationSetup.Models.DAL;
+using OrganisationSetup.Repositories.ApplicationConfiguration;
 using OrganisationSetup.Services;
+using OrganisationSetup.Services.ApplicationConfiguration;
 using SharedUI.Filters;
 using SharedUI.Interfaces;
 using SharedUI.Services;
@@ -22,6 +25,8 @@ builder.Services.AddControllersWithViews(options =>
 #endregion
 
 #region ADD SERVICES
+builder.Services.AddScoped<IACCompany, ACCompanyRepository>();
+builder.Services.AddScoped<ACCompanyService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

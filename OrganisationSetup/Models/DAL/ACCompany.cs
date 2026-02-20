@@ -35,7 +35,7 @@ public partial class ACCompany
 
     public int? UpdatedBy { get; set; }
 
-    public int? DocType { get; set; }
+    public int? DocumentType { get; set; }
 
     public int? DocumentStatus { get; set; }
 

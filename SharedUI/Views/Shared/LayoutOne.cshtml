@@ -36,7 +36,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="~/_content/SharedUI/layoutStyle/LayoutOne.css" />
-    <script src="~/_content/SharedUI/layoutScript/LayoutOneScript.js"></script>
 
 </head>
 <body>
@@ -129,3 +128,16 @@
     </footer>
 </body>
 </html>
+<script>
+    // Pull the PathBase directly from your .NET configuration
+    // If PathBase is "/MyProject", window.basePath becomes "/MyProject/"
+    window.basePath = '@(Context.Request.PathBase.Value ?? "")';
+
+    // Ensure it ends with a slash for easy concatenation
+    if (window.basePath !== "" && !window.basePath.endsWith('/')) {
+        window.basePath += '/';
+    } else if (window.basePath === "") {
+        window.basePath = '/';
+    }
+</script>
+<script src="~/_content/SharedUI/layoutScript/LayoutOneScript.js"></script>

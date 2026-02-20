@@ -1,61 +1,91 @@
-﻿const searchInput = document.getElementById('menuSearch');
-const searchResultCard = document.getElementById('searchResultCard');
-const searchResultList = document.getElementById('searchResultList');
-const allLinks = document.querySelectorAll('.menu-item-source');
+﻿document.addEventListener('DOMContentLoaded', () => {
+    // 1. SELECT ELEMENTS
+    const searchInput = document.getElementById('menuSearch');
+    const searchResultCard = document.getElementById('searchResultCard');
+    const searchResultList = document.getElementById('searchResultList');
+    const allLinks = document.querySelectorAll('.menu-item-source');
+    const topLoader = document.getElementById('top-loader');
 
-searchInput.addEventListener('input', function (e) {
-    const val = e.target.value.toLowerCase().trim();
-    searchResultList.innerHTML = '';
-    if (val.length === 0) { searchResultCard.style.display = 'none'; return; }
+    // 2. SEARCH LOGIC
+    if (searchInput) {
+        searchInput.addEventListener('input', function (e) {
+            const val = e.target.value.toLowerCase().trim();
+            searchResultList.innerHTML = '';
 
-    let matches = 0;
-    allLinks.forEach(link => {
-        const name = link.getAttribute('data-name');
-        if (name.toLowerCase().includes(val)) {
-            const clone = link.cloneNode(true);
-            clone.style.display = 'flex';
-            searchResultList.appendChild(clone);
-            matches++;
-        }
+            if (val.length === 0) {
+                searchResultCard.style.display = 'none';
+                return;
+            }
+
+            let matches = 0;
+            allLinks.forEach(link => {
+                const name = link.getAttribute('data-name');
+                if (name && name.toLowerCase().includes(val)) {
+                    const clone = link.cloneNode(true);
+
+                    // Fix path logic for cloned links
+                    let originalHref = link.getAttribute('href');
+                    // Ensure we don't double up slashes
+                    if (originalHref.startsWith('/')) originalHref = originalHref.substring(1);
+                    clone.href = window.basePath + originalHref;
+
+                    clone.style.display = 'flex';
+                    searchResultList.appendChild(clone);
+                    matches++;
+                }
+            });
+
+            searchResultCard.style.display = 'block';
+            if (matches === 0) {
+                searchResultList.innerHTML = '<div class="text-muted p-3 text-center">No matches found</div>';
+            }
+        });
+    }
+
+    // 3. SMART POSITIONING FOR DROPDOWNS
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('mouseenter', function () {
+            const menu = this.querySelector('.form-menu');
+            if (menu) {
+                const rect = menu.getBoundingClientRect();
+                if (rect.right > window.innerWidth) {
+                    menu.style.left = 'auto';
+                    menu.style.right = '0';
+                }
+            }
+        });
     });
 
-    searchResultCard.style.display = 'block';
-    if (matches === 0) searchResultList.innerHTML = '<div class="text-muted p-3 text-center">No matches found</div>';
+    // 4. INITIAL LOADER HIDE
+    if (topLoader) {
+        topLoader.style.width = "100%";
+        setTimeout(() => topLoader.style.opacity = "0", 400);
+    }
 });
 
+// 5. GLOBAL CLICK HANDLERS (Outside DOMContentLoaded is fine for window events)
 window.addEventListener('click', (e) => {
-    if (!e.target.closest('.search-container')) searchResultCard.style.display = 'none';
+    // Hide search card when clicking outside
+    const searchResultCard = document.getElementById('searchResultCard');
+    if (searchResultCard && !e.target.closest('.search-container')) {
+        searchResultCard.style.display = 'none';
+    }
+
+    // Close profile menu when clicking outside
+    if (!e.target.closest('.user-sec')) {
+        const profileMenu = document.getElementById('profileMenu');
+        if (profileMenu) profileMenu.classList.remove('show');
+    }
 });
 
-// TOGGLE PROFILE
 function toggleProfile(e) {
     e.stopPropagation();
-    document.getElementById('profileMenu').classList.toggle('show');
+    const menu = document.getElementById('profileMenu');
+    if (menu) menu.classList.toggle('show');
 }
 
-window.onclick = function (event) {
-    if (!event.target.closest('.user-sec')) {
-        document.getElementById('profileMenu').classList.remove('show');
-    }
-}
-
-// SMART POSITIONING
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('mouseenter', function () {
-        const menu = this.querySelector('.form-menu');
-        if (menu) {
-            const rect = menu.getBoundingClientRect();
-            if (rect.right > window.innerWidth) {
-                menu.style.left = 'auto';
-                menu.style.right = '0';
-            }
-        }
-    });
-});
-
-// LOADER
-window.onbeforeunload = () => { document.getElementById('top-loader').style.width = "50%"; };
-document.addEventListener("DOMContentLoaded", () => {
+// 6. ON PAGE UNLOAD LOADER
+window.onbeforeunload = () => {
     const l = document.getElementById('top-loader');
-    l.style.width = "100%"; setTimeout(() => l.style.opacity = "0", 400);
-});
+    if (l) l.style.width = "50%";
+};
