@@ -1,25 +1,25 @@
 ﻿namespace SharedUI.Models.Enums
 {
-    public class OSRoute
+    public class SetupRoute
     {
         public enum Area
         {
-            AOSUser = 1,
+            ApplicationConfiguration=1,
             AIMSCHConfiguration = 2,
         }
         public enum Controller
         {
-            OSUDashboard = 1,
-            OSUAuthentication = 2,
+            COMDashboard = 1,
+            COMAuthentication = 2,
         }
         public enum Action
         {
-            OSULogin = 1,
-            OSUDashboardDefault = 1,
+            Login = 1,
+            DashboardDefault = 1,
         }
         public enum Api
         {
-            APIMenu=1
+            COMInternalAPI=1
         }
     }
 }

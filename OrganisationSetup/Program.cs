@@ -82,7 +82,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=OSUAuthentication}/{action=OSULogin}/{id?}",
-    defaults: new { area = "AOSUser" });
+    pattern: "{controller=COMAuthentication}/{action=Login}/{id?}",
+    defaults: new { area = "ApplicationConfiguration" });
 
 app.Run();

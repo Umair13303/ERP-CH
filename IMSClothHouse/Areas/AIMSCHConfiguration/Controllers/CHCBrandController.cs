@@ -4,7 +4,7 @@ using SharedUI.Models.Enums;
 
 namespace IMSClothHouse.Areas.AIMSCHConfiguration.Controllers
 {
-    [Area(nameof(OSRoute.Area.AIMSCHConfiguration))]
+    [Area(nameof(SetupRoute.Area.AIMSCHConfiguration))]
     [Authorize]
     public class CHCBrandController : Controller
     {

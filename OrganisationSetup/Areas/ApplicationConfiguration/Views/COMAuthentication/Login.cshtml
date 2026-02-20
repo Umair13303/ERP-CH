@@ -22,7 +22,7 @@
         </div>
     }
 
-    <form asp-area="AOSUser" asp-controller="OSUAuthentication" asp-action="OSULoginValidate" method="post">
+    <form asp-area="ApplicationConfiguration" asp-controller="COMAuthentication" asp-action="ValidateCredentials" method="post">
         <div class="mb-1">
             <label class="form-label">UserName</label>
             <div class="input-group-custom">
@@ -43,7 +43,7 @@
             </div>
             <span asp-validation-for="Password" class="text-danger small"></span>
         </div>
-        <input type="submit" class="btn-login" value="Login"/>
+        <input type="submit" class="btn-login" value="Login" />
     </form>
 
     <div class="mt-4 text-center">

@@ -9,24 +9,25 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace OrganisationSetup.Areas.OSAUser.Controllers
+namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
 {
-    [Area(nameof(OSRoute.Area.AOSUser))]
-    public class OSUAuthenticationController : Controller
+    [Area(nameof(SetupRoute.Area.ApplicationConfiguration))]
+    public class COMAuthenticationController : Controller
     {
         private readonly ERPOrganisationSetupContext _eRPOSContext;
         private readonly ISessionService _iSessionService;
         private readonly IConfiguration _configuration;
-
-        public OSUAuthenticationController(ERPOrganisationSetupContext eRPOSC, ISessionService iSessionService, IConfiguration configuration)
+        public COMAuthenticationController(ERPOrganisationSetupContext eRPOSC, ISessionService iSessionService, IConfiguration configuration)
         {
             _eRPOSContext = eRPOSC;
             _iSessionService = iSessionService;
             _configuration = configuration;
         }
-        #region PORTION CONTAIN CODE FOR : RENDERING VIEWS
-        public IActionResult OSULogin() => View();
-        public IActionResult OSULogout()
+        public IActionResult Login()
+        {
+            return View();
+        }
+        public IActionResult Logout()
         {
             Response.Cookies.Delete("ERP_Auth_Token", new CookieOptions
             {
@@ -36,18 +37,17 @@ namespace OrganisationSetup.Areas.OSAUser.Controllers
             });
 
             HttpContext.Session.Clear();
-            return RedirectToAction(nameof(OSULogin));
+            return RedirectToAction(nameof(Login));
         }
-        #endregion
 
         #region PORTION CONTAIN CODE FOR : DATABASE OPERATION
         [HttpPost]
-        public async Task<IActionResult> OSULoginValidate(ACUser postedData)
+        public async Task<IActionResult> ValidateCredentials(ACUser postedData)
         {
             if (string.IsNullOrEmpty(postedData.Description) || string.IsNullOrEmpty(postedData.Password))
             {
                 ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.ServerResponse((int?)Code.NotFound));
-                return View(nameof(OSULogin), postedData);
+                return View(nameof(Login), postedData);
             }
             var user = await _eRPOSContext.ACUsers.FirstOrDefaultAsync(u => u.Description == postedData.Description && u.Password == postedData.Password);
             if (user != null)
@@ -68,12 +68,12 @@ namespace OrganisationSetup.Areas.OSAUser.Controllers
                         Path = "/"
                     });
 
-                    return RedirectToAction(nameof(OSRoute.Action.OSUDashboardDefault), nameof(OSRoute.Controller.OSUDashboard), new { area = nameof(OSRoute.Area.AOSUser) });
+                    return RedirectToAction(nameof(SetupRoute.Action.DashboardDefault), nameof(SetupRoute.Controller.COMDashboard), new { area = nameof(SetupRoute.Area.ApplicationConfiguration) });
                 }
                 #endregion
             }
             ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.ServerResponse((int?)Code.BadRequest));
-            return View(nameof(OSULogin), postedData);
+            return View(nameof(Login), postedData);
         }
         #endregion
         private string GenerateJwtToken(ACUser user, string? companyName)
@@ -103,7 +103,6 @@ namespace OrganisationSetup.Areas.OSAUser.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
     }
-
-
 }

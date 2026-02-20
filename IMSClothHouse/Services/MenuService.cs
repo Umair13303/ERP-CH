@@ -31,8 +31,8 @@ namespace IMSClothHouse.Services
                 }
                 var url = $"{APIPaths.InternalDomain}/" +
                                           $"{nameof(ERPProject.OrganisationSetup)}/" +
-                                          $"{nameof(OSRoute.Area.AOSUser)}/" +
-                                          $"{nameof(OSRoute.Api.APIMenu)}/getMenuForUserRole" +
+                                          $"{nameof(SetupRoute.Area.ApplicationConfiguration)}/" +
+                                          $"{nameof(SetupRoute.Api.COMInternalAPI)}/getMenuForUserRole" +
                                           $"?userId={userInfo.UserId}&roleId={userInfo.RoleId}";
                 var response = await client.GetFromJsonAsync<List<VMMenu>>(url);
 

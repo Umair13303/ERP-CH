@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using SharedUI.Interfaces;
 using SharedUI.Models.Enums;
 
-namespace OrganisationSetup.Areas.AOSUser.Controllers
+namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
 {
     [Authorize]
-    [Area(nameof(OSRoute.Area.AOSUser))]
-    [Route(nameof(OSRoute.Area.AOSUser) + "/" + nameof(OSRoute.Api.APIMenu))]
-    public class APIMenuController : Controller
+    [Area(nameof(SetupRoute.Area.ApplicationConfiguration))]
+    [Route(nameof(SetupRoute.Area.ApplicationConfiguration) + "/" + nameof(SetupRoute.Api.COMInternalAPI))]
+    public class COMInternalAPIController : Controller
     {
         private readonly IMenuService _iMenuService;
 
-        public APIMenuController(IMenuService iMenuService)
+        public COMInternalAPIController(IMenuService iMenuService)
         {
             _iMenuService = iMenuService;
         }
@@ -23,4 +23,5 @@ namespace OrganisationSetup.Areas.AOSUser.Controllers
             return Ok(menu);
         }
     }
+
 }
