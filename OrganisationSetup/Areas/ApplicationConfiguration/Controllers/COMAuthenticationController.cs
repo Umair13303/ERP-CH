@@ -46,7 +46,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
         {
             if (string.IsNullOrEmpty(postedData.Description) || string.IsNullOrEmpty(postedData.Password))
             {
-                ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.ServerResponse((int?)Code.NotFound));
+                ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.serverResponse((int?)Code.NotFound));
                 return View(nameof(Login), postedData);
             }
             var user = await _eRPOSContext.ACUsers.FirstOrDefaultAsync(u => u.Description == postedData.Description && u.Password == postedData.Password);
@@ -72,7 +72,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
                 }
                 #endregion
             }
-            ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.ServerResponse((int?)Code.BadRequest));
+            ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.serverResponse((int?)Code.BadRequest));
             return View(nameof(Login), postedData);
         }
         #endregion

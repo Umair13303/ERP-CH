@@ -8,7 +8,7 @@ namespace SharedUI.Models.Responses
 {
     public class Message
     {
-        public static string ServerResponse(int? code)
+        public static string serverResponse(int? code)
         {
             return code switch
             {

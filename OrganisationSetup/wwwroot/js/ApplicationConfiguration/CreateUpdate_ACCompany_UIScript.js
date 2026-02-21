@@ -1,6 +1,6 @@
 ﻿/* ------ Global Variable ------ */
 var operationType = $("#OperationType").val();
-var dropDownListInitOption = "<option value='- 1'>Select an option</option>";
+var dropDownListInitOption = "<option value='-1'>Select an option</option>";
 
 
 /* ------ Depending DDL's ------ */
@@ -108,9 +108,9 @@ function createUpdateDataIntoDB() {
     var website = $("#TextBoxWebsite").val();
     var address = $("#TextAreaAddress").val();
 
-    var postedData = {
+    var jsonData = {
         OperationType: operationType,
-        GuID: guID,
+        GuID: guID ? guID : null,
         Description: description,
         CountryId: countryId,
         CityId: cityId,
@@ -122,17 +122,19 @@ function createUpdateDataIntoDB() {
     $.ajax({
         url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/createUpdateCompany",
         type: "POST",
+        data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(postedData),
+        dataType: "json",
         beforeSend: function () {
             initLoading();
         },
-        success: function (result) {
-            if (result.isSuccess || result.IsSuccess) {
-                toastr.success(result.message || "Record processed successfully!");
+        success: function (response) {
+            if (response.IsSuccess == true) {
+                toastr.success(result.message);
                 $("#ACCompanyForm").removeClass('was-validated');
-            } else {
-                toastr.error(result.message || "Failed to save data.");
+            }
+            else {
+                toastr.info(result.message);
             }
         },
         error: function (xhr) {

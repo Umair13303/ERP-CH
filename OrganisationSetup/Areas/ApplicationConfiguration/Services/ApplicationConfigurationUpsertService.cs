@@ -6,6 +6,8 @@ using SharedUI.Models.Contexts;
 using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
 using System.Diagnostics;
+using SharedUI.Models.Responses;
+
 
 namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
 {
@@ -27,8 +29,9 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
         public async Task<ServiceResult> updateInsertDataInto_ACCompany(PostedData postedData)
         {
             var userInfo = TempUser.Fill(_httpContextAccessor);
+
             if (!userInfo.IsAuthenticated)
-                return ServiceResult.Failure("Session Expired", 300);
+                return ServiceResult.Failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
             if(postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
@@ -41,26 +44,14 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             {
                 var result = await _repo.UpsertInto_ACCompany(postedData, userInfo, con, transaction);
                 transaction.Commit();
-                return ServiceResult.Success(result);
+
+                return ServiceResult.Success(Message.serverResponse(result), result.Value);
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return ServiceResult.Failure($"Database Error: {ex.Message}", 500);
+                return ServiceResult.Failure(Message.serverResponse((int?)Code.InternalServerError), (int)Code.InternalServerError);
             }
         }
     }
-}
-public class ServiceResult
-{
-    public bool IsSuccess { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public int? Data { get; set; }
-    public int StatusCode { get; set; }
-
-    public static ServiceResult Success(int? data) =>
-        new ServiceResult { IsSuccess = true, Data = data, StatusCode = 200 };
-
-    public static ServiceResult Failure(string msg, int code) =>
-        new ServiceResult { IsSuccess = false, Message = msg, StatusCode = code };
 }

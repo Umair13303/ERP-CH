@@ -6,6 +6,8 @@ using OrganisationSetup.Services;
 using SharedUI.Models.Configurations;
 using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
+using SharedUI.Models.Responses;
+
 
 namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
 {
@@ -30,13 +32,14 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
         }
         #endregion
 
-        #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL
+        #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL\
+        [HttpGet]
         public async Task<IActionResult> populateCountryListByParam()
         {
             var result = await _commonsServices.populateCountryByParam();
             return Json(result);
         }
-
+        [HttpGet]
         public async Task<IActionResult> populateCityListByParam(int? countryId)
         {
             var result = await _commonsServices.populateCityByParam(countryId);
@@ -46,20 +49,16 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
 
         #region PORTION CONTAIN CODE TO: ADD/EDIT/DELETE DOCUMENT
         [HttpPost]
-        public async Task<IActionResult> createUpdateCompany(PostedData postedData)
+        public async Task<IActionResult> createUpdateCompany([FromBody] PostedData postedData)
         {
-            if (!ModelState.IsValid) return View(postedData);
-
-            var result = await _acuService.updateInsertDataInto_ACCompany(postedData);
-
-            if (result.IsSuccess)
+            if (!ModelState.IsValid)
             {
-                TempData["Success"] = "Data Saved Successfully!";
-                return RedirectToAction("Index");
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
             }
-
-            ViewBag.ErrorMessage = result.Message;
-            return Json(result);
+            if (!ModelState.IsValid) return View(postedData);
+            
+            var result = await _acuService.updateInsertDataInto_ACCompany(postedData);
+            return Json(new {IsSuccess= result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
         }
         #endregion
     }
