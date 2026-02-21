@@ -2,7 +2,10 @@
 @{
     Layout = "LayoutOne";
 }
+
+
 <div class="container-fluid py-2">
+    
     <div class="d-flex justify-content-between align-items-center border-bottom mb-4 pb-3">
         <div>
             <h5 class="fw-bold mb-0">@ViewBag.DisplayName</h5>
@@ -30,177 +33,86 @@
     </div>
 
     <form id="ACCompanyForm">
-        @* Hidden Fields for logic *@
         @Html.Hidden("OperationType", (string)ViewBag.OperationType)
         @Html.Hidden("GuID")
-        @Html.Hidden("CompanyId")
+        @{
+            if (ViewBag.OperationType == nameof(OperationType.UPDATE_DATA_INTO_DB))
+            {
+                <div class="row mb-0">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("DropDownListDocument", "Document (Company)", new { @class = "col-form-label" })
+                            @Html.DropDownList("DocumentGuID", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", @id = "DropDownListDocument" })
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+<div class="card">
+    <div class="card-body">
+     
+                <div class="col-12 mt-4">
+                    <div class="bg-light rounded-2 border-start border-primary border-4 p-2">
+                        <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> COMPANY INFORMATION</span>
+                    </div>
+                </div>
 
-        <div class="col-12 mt-4">
-            <div class="bg-light rounded-2 border-start border-primary border-4 p-2">
-                <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> COMPANY INFORMATION</span>
-            </div>
-        </div>
-        @* Row 1: Description & Country *@
-        <div class="row mb-0">
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxDescription", "Description", new { @class = "col-form-label" })
-                    @Html.TextBox("Description", null, new { @class = "form-control form-control-sm", placeholder = "Enter Description", @id = "TextBoxDescription" })
+                <div class="row mb-0">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("TextBoxDescription", "Description", new { @class = "col-form-label" })
+                            @Html.TextBox("Description", null, new { @class = "form-control form-control-sm", required = "required",placeholder = "Provide Description!", @id = "TextBoxDescription" })
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("DropDownListCountry", "Country", new { @class = "col-form-label" })
+                            @Html.DropDownList("CountryId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", @id = "DropDownListCountry" })
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("DropDownCountry", "Country", new { @class = "col-form-label" })
-                    @Html.DropDownList("CountryId", new List<SelectListItem>
-                    {
-                        new SelectListItem { Text = "Pakistan", Value = "1" },
-                                        new SelectListItem { Text = "United States", Value = "2" },
-                                        new SelectListItem { Text = "United Kingdom", Value = "3" }
-                                        }, "Select Country", new { @class = "form-select form-select-sm", @id = "DropDownCountry" })
-                </div>
-            </div>
-        </div>
 
-        @* Row 2: City & Status *@
-        <div class="row mb-0">
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("DropDownCity", "City", new { @class = "col-form-label" })
-                    @Html.DropDownList("CityId", new List<SelectListItem>
-                                        {
-                        new SelectListItem { Text = "Islamabad", Value = "1" },
-                                        new SelectListItem { Text = "New York", Value = "2" },
-                                        new SelectListItem { Text = "London", Value = "3" }
-                                        }, "Select City", new { @class = "form-select form-select-sm", @id = "DropDownCity" })
+                <div class="row mb-0">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("DropDownListCity", "City", new { @class = "col-form-label" })
+                            @Html.DropDownList("CityId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", @id = "DropDownListCity" })
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("TextBoxContact", "Contact Number", new { @class = "col-form-label" })
+                            @Html.TextBox("Contact", null, new { @class = "form-control form-control-sm contact", required = "required", placeholder = "Provide Contact!", @id = "TextBoxContact" })
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxContact", "Contact Number", new { @class = "col-form-label" })
-                    @Html.TextBox("Contact", null, new { @class = "form-control form-control-sm", placeholder = "Enter Contact No!", @id = "TextBoxContact" })
-                </div>
-            </div>
-        </div>
-        <div class="row mb-0">
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxEmail", "Email Address", new { @class = "col-form-label" })
-                    @Html.TextBox("Email", null, new { @class = "form-control form-control-sm", type = "email", placeholder = "example@domain.com", @id = "TextBoxEmail" })
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxWebsite", "Website", new { @class = "col-form-label" })
-                    @Html.TextBox("Website", null, new { @class = "form-control form-control-sm", placeholder = "www.website.com", @id = "TextBoxWebsite" })
-                </div>
-            </div>
-        </div>
 
-        <div class="row mb-0">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    @Html.Label("TextAreaAddress", "Address", new { @class = "col-form-label" })
-                    @Html.TextArea("Address", null, new { @class = "form-control form-control-sm", rows = "2", placeholder = "Enter complete address here...", @id = "TextAreaAddress" })
+                <div class="row mb-0">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("TextBoxEmail", "Email Address", new { @class = "col-form-label" })
+                            @Html.TextBox("Email", null, new { @class = "form-control form-control-sm email", type = "email", required = "required", placeholder = "Provide Email!", @id = "TextBoxEmail" })
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("TextBoxWebsite", "Website", new { @class = "col-form-label" })
+                            @Html.TextBox("Website", null, new { @class = "form-control form-control-sm website", required = "required", placeholder = "Provide Website!", @id = "TextBoxWebsite" })
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-
-        @* Row 1: Description & Country *@
-@*         <div class="row mb-0">
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxDescription", "Description", new { @class = "col-form-label" })
-                    @Html.TextBox("Description", null, new { @class = "form-control form-control-sm", placeholder = "Please Enter Description Here!", @id = "TextBoxDescription" })
+                <div class="row mb-0">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("TextAreaAddress", "Address", new { @class = "col-form-label" })
+                            @Html.TextArea("Address", null, new { @class = "form-control form-control-sm", rows = "2", required = "required", placeholder = "Provide complete address", @id = "TextAreaAddress" })
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("DropDownCountry", "Country", new { @class = "col-form-label" })
-                    @Html.DropDownList("CountryId", Enumerable.Empty<SelectListItem>(), "Select Country", new { @class = "form-select form-select-sm", @id = "DropDownCountry" })
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-0">
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("DropDownCity", "City", new { @class = "col-form-label" })
-                    @Html.DropDownList("CityId", Enumerable.Empty<SelectListItem>(), "Select City", new { @class = "form-select form-select-sm", @id = "DropDownCity" })
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxContact", "Contact Number", new { @class = "col-form-label" })
-                    @Html.TextBox("Contact", null, new { @class = "form-control form-control-sm", placeholder = "Enter Contact No!", @id = "TextBoxContact" })
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-0">
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxEmail", "Email Address", new { @class = "col-form-label" })
-                    @Html.TextBox("Email", null, new { @class = "form-control form-control-sm", type = "email", placeholder = "example@domain.com", @id = "TextBoxEmail" })
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxWebsite", "Website", new { @class = "col-form-label" })
-                    @Html.TextBox("Website", null, new { @class = "form-control form-control-sm", placeholder = "www.website.com", @id = "TextBoxWebsite" })
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-0">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    @Html.Label("TextAreaAddress", "Address", new { @class = "col-form-label" })
-                    @Html.TextArea("Address", null, new { @class = "form-control form-control-sm", rows = "2", placeholder = "Enter complete address here...", @id = "TextAreaAddress" })
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-sm-12 col-md-6">
-                <div class="form-group">
-                    @Html.Label("TextBoxLogo", "Logo Path/URL", new { @class = "col-form-label" })
-                    @Html.TextBox("Logo", null, new { @class = "form-control form-control-sm", @id = "TextBoxLogo" })
-                </div>
-            </div>
-        </div> *@
+    </div>
+</div>
+        
     </form>
 </div>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#ButtonSaveData").click(function () {
-
-            // Basic Frontend Validation (Optional but recommended)
-            if ($("#TextBoxDescription").val().trim() === "") {
-                alert("Description is required!");
-                return;
-            }
-
-            var formData = $("#ACCompanyForm").serialize();
-
-            $.ajax({
-                type: "POST",
-    url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/SaveUpdate",
-    data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        alert("Data Saved Successfully! ID: " + response.data);
-                        location.reload(); // Refresh to clear form or redirect
-                    } else {
-                        alert("Error: " + response.message);
-                    }
-                },
-                error: function (err) {
-                    console.error(err);
-                    alert("A system error occurred.");
-                }
-            });
-        });
-    });
-</script>
+<script src="~/js/applicationconfiguration/createupdate_accompany_uiscript.js"></script>

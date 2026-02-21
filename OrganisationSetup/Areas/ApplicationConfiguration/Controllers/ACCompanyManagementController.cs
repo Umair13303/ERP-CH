@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using OrganisationSetup.Services.ApplicationConfiguration;
+using OrganisationSetup.Areas.ApplicationConfiguration.Services;
+using OrganisationSetup.Services;
 using SharedUI.Models.Configurations;
 using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
@@ -11,32 +13,54 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
     [Area(nameof(SetupRoute.Area.ApplicationConfiguration))]
     public class ACCompanyManagementController : Controller
     {
-        private readonly ACCompanyService _acCompanyService;
-        public ACCompanyManagementController(ACCompanyService acCompanyService)
+        private readonly IApplicationConfigurationUpsertService _acuService;
+        private readonly ICommonsServices _commonsServices;
+        public ACCompanyManagementController(IApplicationConfigurationUpsertService acCompanyService,ICommonsServices commonsServices)
         {
-            _acCompanyService = acCompanyService;
+            _commonsServices = commonsServices;
+            _acuService = acCompanyService;
         }
 
+        #region PORTION CONTAIN CODE TO: RENDER VIEW
         public IActionResult CreateUpdate_ACCompany_UI(UISetting ui)
         {
             ViewBag.OperationType = ui.OperationType;
             ViewBag.DisplayName = ui.DisplayName;
             return View();
         }
+        #endregion
 
-        [HttpPost]
-        public IActionResult SaveUpdate(PostedData data)
+        #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL
+        public async Task<IActionResult> populateCountryListByParam()
         {
-            try
-            {
-                var resultId = _acCompanyService.SaveUpdate(data);
-
-                return Json(new { success = true, data = resultId, message = "Record saved successfully!" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
+            var result = await _commonsServices.populateCountryByParam();
+            return Json(result);
         }
+
+        public async Task<IActionResult> populateCityListByParam(int? countryId)
+        {
+            var result = await _commonsServices.populateCityByParam(countryId);
+            return Json(result);
+        }
+        #endregion
+
+        #region PORTION CONTAIN CODE TO: ADD/EDIT/DELETE DOCUMENT
+        [HttpPost]
+        public async Task<IActionResult> createUpdateCompany(PostedData postedData)
+        {
+            if (!ModelState.IsValid) return View(postedData);
+
+            var result = await _acuService.updateInsertDataInto_ACCompany(postedData);
+
+            if (result.IsSuccess)
+            {
+                TempData["Success"] = "Data Saved Successfully!";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.ErrorMessage = result.Message;
+            return Json(result);
+        }
+        #endregion
     }
 }

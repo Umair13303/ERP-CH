@@ -1,7 +1,9 @@
-﻿@using SharedUI.Interfaces
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using SharedUI.Interfaces
 @using SharedUI.Models.ViewModels
 @using System.Net.NetworkInformation
 @inject ISessionService UserSession
+
 @{
     string initials = "U";
     if (!string.IsNullOrEmpty(UserSession.UserName) && UserSession.UserName != "Guest")
@@ -36,6 +38,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="~/_content/SharedUI/layoutStyle/LayoutOne.css" />
+    
+    @* STYLES SHEET FOR SELECT 2 *@
+    <link href="/_content/SharedUI/lib/select2.min.css" rel="stylesheet" />
+    <link href="~/_content/SharedUI/lib/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+    @* STYLES SHEET FOR TOASTER *@
+    <link href="~/_content/SharedUI/lib/toastr.min.css" rel="stylesheet" />
+
+    <script src="~/_content/SharedUI/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/_content/SharedUI/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* SCRIPT FOR SELECT 2 *@
+    <script src="~/_content/SharedUI/lib/select2.min.js"></script>
+    @* SCRIPT FOR INPUT MASKING *@
+    <script src="~/_content/SharedUI/lib/jquery.mask.min.js"></script>
+    <script src="~/_content/SharedUI/utilities/UIMasking.js"></script>
+    
+    @* SCRIPT FOR TOASTER *@
+    <script src="~/_content/SharedUI/lib/toastr.min.js"></script>
+    <script src="~/_content/SharedUI/utilities/UISetting.js"></script>
+
+
+
 
 </head>
 <body>
@@ -95,8 +120,6 @@
                                     </div>
                                     @foreach (var right in sub.Rights)
                                     {
-                                        // 1. We bypass Url.Content because it forces the "/Org" prefix.
-                                        // 2. We ensure the URL starts with a single "/" so it hits the Gateway root.
                                         var gatewayUrl = right.Url.StartsWith("/") ? right.Url : "/" + right.Url + "?DisplayName=" + right.DisplayName + "&OperationType="+right.OperationType;
 
                                         <a href="@gatewayUrl" class="form-link menu-item-source" data-name="@right.DisplayName">
@@ -113,7 +136,15 @@
     </div>
     <main class="main-content">
         <div class="container-fluid">
-            <div class="content-card">@RenderBody()</div>
+            <div class="content-card">
+                <div id="ui-loader">
+                    <div class="loader-content">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 fw-bold">Processing... Please wait.</p>
+                    </div>
+                </div>
+                @RenderBody()
+            </div>
         </div>
     </main>
     <footer class="main-footer">
@@ -129,11 +160,7 @@
 </body>
 </html>
 <script>
-    // Pull the PathBase directly from your .NET configuration
-    // If PathBase is "/MyProject", window.basePath becomes "/MyProject/"
     window.basePath = '@(Context.Request.PathBase.Value ?? "")';
-
-    // Ensure it ends with a slash for easy concatenation
     if (window.basePath !== "" && !window.basePath.endsWith('/')) {
         window.basePath += '/';
     } else if (window.basePath === "") {

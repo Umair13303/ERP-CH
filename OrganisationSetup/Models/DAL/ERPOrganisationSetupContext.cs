@@ -11,25 +11,22 @@ public partial class ERPOrganisationSetupContext : DbContext
     {
     }
 
-    public virtual DbSet<vRight> vRights { get; set; }
-
     public virtual DbSet<ACBranch> ACBranches { get; set; }
 
     public virtual DbSet<ACCompany> ACCompanies { get; set; }
 
     public virtual DbSet<ACUser> ACUsers { get; set; }
 
+    public virtual DbSet<AFChartOfAccount> AFChartOfAccounts { get; set; }
+
+    public virtual DbSet<vCity> vCities { get; set; }
+
+    public virtual DbSet<vCountry> vCountries { get; set; }
+
+    public virtual DbSet<vRight> vRights { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<vRight>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("vRight");
-
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-        });
-
         modelBuilder.Entity<ACBranch>(entity =>
         {
             entity
@@ -61,6 +58,42 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<AFChartOfAccount>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("AFChartOfAccount");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<vCity>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vCity");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<vCountry>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vCountry");
+        });
+
+        modelBuilder.Entity<vRight>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vRight");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -203,9 +203,10 @@ It is a class that has been underhood of Interface and must contain all function
 
 
 
+Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPOrganisationSetup;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPOrganisationSetupContext -Force -NoOnConfiguring
 
-
-
+Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPOrganisationSetup;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPOrganisationSetupContext -Force -NoOnConfiguring --use-database-names --no-build
+Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPOrganisationSetup;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPOrganisationSetupContext -Force -NoOnConfiguring -UseDatabaseNames -NoBuild
 ------------------------------------------ NUGET COMMANDS
 Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPClothHouse;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPClothHouseContext -Force -NoOnConfiguring
 1. IN GATEWAY: Install-Package Yarp.ReverseProxy
