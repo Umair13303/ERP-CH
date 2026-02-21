@@ -2,7 +2,6 @@
 var operationType = $("#OperationType").val();
 var dropDownListInitOption = "<option value='-1'>Select an option</option>";
 
-
 /* ------ Depending DDL's ------ */
 function getCountryList() {
     $.ajax({
@@ -63,8 +62,10 @@ function changeEventHandler() {
         getCityList();
     });
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
-        e.preventDefault();
-        createUpdateDataIntoDB();
+        if (validater()) {
+            e.preventDefault();
+            createUpdateDataIntoDB();
+        }
     });
 }
 
@@ -130,11 +131,11 @@ function createUpdateDataIntoDB() {
         },
         success: function (response) {
             if (response.IsSuccess == true) {
-                toastr.success(result.message);
+                toastr.success(response.message);
                 $("#ACCompanyForm").removeClass('was-validated');
             }
             else {
-                toastr.info(result.message);
+                toastr.info(response.message);
             }
         },
         error: function (xhr) {
@@ -142,10 +143,15 @@ function createUpdateDataIntoDB() {
         },
         complete: function () {
             stopLoading();
+            clearInputFields();
         }
     });
 }
+function clearInputFields() {
+    $(".form-control").val('');
+    $(".select2").val('-1').trigger("change");
 
+}
 $(function () {
     if (typeof setupGlobalAjax === "function") setupGlobalAjax();
     initialize();

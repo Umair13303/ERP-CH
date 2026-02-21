@@ -24,10 +24,6 @@ builder.Services.AddControllersWithViews(options =>
 #endregion
 
 #region ADD SERVICES
-builder.Services.AddScoped<IOSDataLayer, OSDataLayerRepository>();
-builder.Services.AddScoped<IApplicationConfigurationUpsertService, ApplicationConfigurationUpsertService>();
-builder.Services.AddScoped<ICommonsServices, CommonServices>();
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,6 +52,10 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IOSDataLayer, OSDataLayerRepository>();
+builder.Services.AddScoped<IApplicationConfigurationUpsertService, ApplicationConfigurationUpsertService>();
+builder.Services.AddScoped<ICommonsServices, CommonServices>();
+builder.Services.AddScoped<IApplicationConfigurationValidationService, ApplicationConfigurationValidationService>();
 #endregion
 var app = builder.Build();
 var pathBase = builder.Configuration["PathBase"];

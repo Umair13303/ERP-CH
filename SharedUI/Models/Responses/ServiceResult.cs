@@ -13,10 +13,10 @@ namespace SharedUI.Models.Responses
         public int? Data { get; set; }
         public int StatusCode { get; set; }
 
-        public static ServiceResult Success(string response, int requestStatus) =>
+        public static ServiceResult success(string response, int requestStatus) =>
             new ServiceResult { IsSuccess = true, Message = response, StatusCode = requestStatus };
 
-        public static ServiceResult Failure(string response, int requestStatus) =>
+        public static ServiceResult failure(string response, int requestStatus) =>
             new ServiceResult { IsSuccess = false, Message = response, StatusCode = requestStatus };
 
     }
