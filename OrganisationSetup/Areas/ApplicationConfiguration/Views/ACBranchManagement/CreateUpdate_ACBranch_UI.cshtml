@@ -5,7 +5,7 @@
 
 
 <div class="container-fluid py-2">
-    
+
     <div class="d-flex justify-content-between align-items-center border-bottom mb-4 pb-3">
         <div>
             <h5 class="fw-bold mb-0">@ViewBag.DisplayName</h5>
@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <form id="ACCompanyForm">
+    <form id="ACBranchForm">
         @Html.Hidden("OperationType", (string)ViewBag.OperationType)
         @Html.Hidden("GuID")
         @{
@@ -43,7 +43,7 @@
                         <div class="row mb-0">
                             <div class="col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    @Html.Label("DropDownListDocument", "Document (Company)", new { @class = "col-form-label" })
+                                    @Html.Label("DropDownListDocument", "Document (Branch)", new { @class = "col-form-label" })
                                     @Html.DropDownList("DocumentGuID", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", @id = "DropDownListDocument" })
                                 </div>
                             </div>
@@ -53,11 +53,11 @@
                 </div>
             }
         }
-<div class="card">
-    <div class="card-body">
+        <div class="card">
+            <div class="card-body">
                 <div class="col-12 mt-4">
                     <div class="bg-light rounded-2 border-start border-primary border-4 p-2">
-                        <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> COMPANY INFORMATION</span>
+                        <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> BRANCH INFORMATION</span>
                     </div>
                 </div>
 
@@ -65,12 +65,18 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             @Html.Label("TextBoxDescription", "Description", new { @class = "col-form-label" })
-                            @Html.TextBox("Description", null, new { @class = "form-control form-control-sm", required = "required",placeholder = "Provide Description!", @id = "TextBoxDescription" })
+                            @Html.TextBox("Description", null, new { @class = "form-control form-control-sm", required = "required", placeholder = "Provide Description!", @id = "TextBoxDescription" })
                         </div>
                     </div>
                 </div>
 
                 <div class="row mb-0">
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            @Html.Label("DropDownListOrganisationType", "Organisation Type", new { @class = "col-form-label" })
+                            @Html.DropDownList("OrganisationTypeId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", required = "required", @id = "DropDownListOrganisationType" })
+                        </div>
+                    </div>
                     <div class="col-sm-12 col-md-3">
                         <div class="form-group">
                             @Html.Label("DropDownListCountry", "Country", new { @class = "col-form-label" })
@@ -83,7 +89,6 @@
                             @Html.DropDownList("CityId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", required = "required", @id = "DropDownListCity" })
                         </div>
                     </div>
-                   
                 </div>
 
                 <div class="row mb-0">
@@ -101,8 +106,8 @@
                     </div>
                     <div class="col-sm-12 col-md-3">
                         <div class="form-group">
-                            @Html.Label("TextBoxWebsite", "Website", new { @class = "col-form-label" })
-                            @Html.TextBox("Website", null, new { @class = "form-control form-control-sm website", required = "required", placeholder = "Provide Website!", @id = "TextBoxWebsite" })
+                            @Html.Label("TextBoxNTNNumber", "NTN Number", new { @class = "col-form-label" })
+                            @Html.TextBox("NTNNumber", null, new { @class = "form-control form-control-sm ntnnumber", required = "required", placeholder = "Provide Contact!", @id = "TextBoxNTNNumber" })
                         </div>
                     </div>
                 </div>
@@ -115,9 +120,9 @@
                         </div>
                     </div>
                 </div>
-    </div>
-</div>
-        
+            </div>
+        </div>
+
     </form>
 </div>
-<script src="~/js/applicationconfiguration/createupdate_accompany_uiscript.js"></script>
+<script src="~/js/applicationconfiguration/createupdate_acbranch_uiscript.js"></script>

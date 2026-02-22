@@ -7,6 +7,7 @@ namespace OrganisationSetup.Services
 {
     public interface ICommonsServices
     {
+        Task<List<vCountry>> populateOrganisationTypeByParam();
         Task<List<vCountry>> populateCountryByParam();
         Task<List<vCity>> populateCityByParam(int? countryId);
     }
@@ -18,6 +19,11 @@ namespace OrganisationSetup.Services
         {
             _context = context;
 
+        }
+        public async Task<List<vCountry>> populateOrganisationTypeByParam()
+        {
+            var result = await _context.vCountries.AsNoTracking().ToListAsync();
+            return result;
         }
         public async Task<List<vCountry>> populateCountryByParam()
         {

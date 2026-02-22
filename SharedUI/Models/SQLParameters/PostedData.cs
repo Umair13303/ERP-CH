@@ -11,6 +11,7 @@ namespace SharedUI.Models.SQLParameters
         public string? OperationType { get; set; }
         public Guid? GuID { get; set; }
         public string? Description { get; set; }
+        public int? OrganisationTypeId { get; set; }
         public int? CountryId { get; set; }
         public int? CityId { get; set; }
         public string? Contact { get; set; }
@@ -18,6 +19,7 @@ namespace SharedUI.Models.SQLParameters
         public string? Address { get; set; }
         public string? Website { get; set; }
         public string? Logo { get; set; }
+        public string? NTNNumber { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }

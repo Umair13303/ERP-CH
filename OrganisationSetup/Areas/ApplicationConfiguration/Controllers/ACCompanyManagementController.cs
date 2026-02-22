@@ -32,7 +32,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
         }
         #endregion
 
-        #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL\
+        #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL
         [HttpGet]
         public async Task<IActionResult> populateCountryListByParam()
         {

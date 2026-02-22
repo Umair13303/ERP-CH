@@ -3,9 +3,31 @@ var operationType = $("#OperationType").val();
 var dropDownListInitOption = "<option value='-1'>Select an option</option>";
 
 /* ------ Depending DDL's ------ */
+function getOrganisationTypeList() {
+    $.ajax({
+        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/populateOrganisationTypeListByParam",
+        type: "GET",
+        dataType: "json",
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListOrganisationType").empty().append(dropDownListInitOption);
+            $.each(data, function (index, item) {
+                $("#DropDownListOrganisationType").append(new Option(item.description, item.id));
+            });
+        },
+        complete: function () {
+
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
 function getCountryList() {
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/populateCountryListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/populateCountryListByParam",
         type: "GET",
         dataType: "json",
         beforeSend: function () {
@@ -32,7 +54,7 @@ function getCityList(cityId) {
         return;
     }
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/populateCityListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/populateCityListByParam",
         type: "GET",
         data: { countryId: countryId },
         dataType: "json",
@@ -71,6 +93,7 @@ function changeEventHandler() {
 
 /* ------ Call Initial Components ------ */
 function initialize() {
+    getOrganisationTypeList();
     getCountryList();
     const intputMasking = new UIMasking();
     intputMasking.initialize();
@@ -82,7 +105,7 @@ function initialize() {
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ACCompanyForm");
+    var form = document.getElementById("ACBranchForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -102,26 +125,28 @@ function createUpdateDataIntoDB() {
     var operationType = $("#OperationType").val();
     var guID = $("#GuID").val();
     var description = $("#TextBoxDescription").val();
+    var organisationTypeId = $("#DropDownListOrganisationType :selected").val();
     var countryId = $("#DropDownListCountry :selected").val();
     var cityId = $("#DropDownListCity :selected").val();
     var contact = $("#TextBoxContact").val();
     var email = $("#TextBoxEmail").val();
-    var website = $("#TextBoxWebsite").val();
+    var ntnNumber = $("#TextBoxNTNNumber").val();
     var address = $("#TextAreaAddress").val();
 
     var jsonData = {
         OperationType: operationType,
         GuID: guID ? guID : null,
+        OrganisationTypeId: organisationTypeId,
         Description: description,
         CountryId: countryId,
         CityId: cityId,
         Contact: contact,
         Email: email,
-        Website: website,
+        NTNNumber: ntnNumber,
         Address: address
     };
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/createUpdateCompany",
+        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/createUpdateBranch",
         type: "POST",
         data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
@@ -132,7 +157,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#ACCompanyForm").removeClass('was-validated');
+                $("#ACBranchForm").removeClass('was-validated');
             }
             else {
                 toastr.info(response.message);
