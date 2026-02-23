@@ -20,6 +20,8 @@ namespace SharedUI.Models.SQLParameters
         public string? Website { get; set; }
         public string? Logo { get; set; }
         public string? NTNNumber { get; set; }
+        public string? Password { get; set; }
+        public string? AllowedBranchIds { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
@@ -29,5 +31,7 @@ namespace SharedUI.Models.SQLParameters
         public bool? Status { get; set; }
         public int? BranchId { get; set; }
         public int? CompanyId { get; set; }
+        public int? EmployeeId { get; set; }
+        public int? RoleId { get; set; }
     }
 }

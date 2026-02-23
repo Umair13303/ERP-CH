@@ -15,9 +15,9 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
     [Area(nameof(SetupRoute.Area.ApplicationConfiguration))]
     public class ACCompanyManagementController : Controller
     {
-        private readonly IApplicationConfigurationUpsertService _acuService;
-        private readonly ICommonsServices _commonsServices;
-        public ACCompanyManagementController(IApplicationConfigurationUpsertService acCompanyService,ICommonsServices commonsServices)
+        private readonly IApplicationConfigurationUpsert _acuService;
+        private readonly ICommon _commonsServices;
+        public ACCompanyManagementController(IApplicationConfigurationUpsert acCompanyService,ICommon commonsServices)
         {
             _commonsServices = commonsServices;
             _acuService = acCompanyService;
@@ -34,13 +34,13 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
 
         #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL
         [HttpGet]
-        public async Task<IActionResult> populateCountryListByParam()
+        public async Task<IActionResult> populatevCountryListByParam()
         {
             var result = await _commonsServices.populateCountryByParam();
             return Json(result);
         }
         [HttpGet]
-        public async Task<IActionResult> populateCityListByParam(int? countryId)
+        public async Task<IActionResult> populatevCityListByParam(int? countryId)
         {
             var result = await _commonsServices.populateCityByParam(countryId);
             return Json(result);

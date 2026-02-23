@@ -3,9 +3,9 @@ var operationType = $("#OperationType").val();
 var dropDownListInitOption = "<option value='-1'>Select an option</option>";
 
 /* ------ Depending DDL's ------ */
-function getCountryList() {
+function getvCountryList() {
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/populateCountryListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/populatevCountryListByParam",
         type: "GET",
         dataType: "json",
         beforeSend: function () {
@@ -25,14 +25,14 @@ function getCountryList() {
         }
     });
 }
-function getCityList(cityId) {
+function getvCityList(cityId) {
     var countryId = $("#DropDownListCountry :selected").val();
     if (!countryId || countryId == "-1") {
         $("#DropDownListCity").empty().append(dropDownListInitOption);
         return;
     }
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/populateCityListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/populatevCityListByParam",
         type: "GET",
         data: { countryId: countryId },
         dataType: "json",
@@ -59,7 +59,7 @@ function getCityList(cityId) {
 function changeEventHandler() {
     $("#DropDownListCountry").on("change", function () {
         var cityId = 23;
-        getCityList(cityId);
+        getvCityList(cityId);
     });
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
         if (validater()) {
@@ -71,7 +71,7 @@ function changeEventHandler() {
 
 /* ------ Call Initial Components ------ */
 function initialize() {
-    getCountryList();
+    getvCountryList();
     const intputMasking = new UIMasking();
     intputMasking.initialize();
     $('.select2').select2({

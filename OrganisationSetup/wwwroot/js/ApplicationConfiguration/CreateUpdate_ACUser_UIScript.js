@@ -3,18 +3,19 @@ var operationType = $("#OperationType").val();
 var dropDownListInitOption = "<option value='-1'>Select an option</option>";
 
 /* ------ Depending DDL's ------ */
-function getvOrganisationTypeList() {
+
+function getvRoleList() {
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/populatevOrganisationTypeListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACUserManagement/populatevRoleListByParam",
         type: "GET",
         dataType: "json",
         beforeSend: function () {
 
         },
         success: function (data) {
-            $("#DropDownListOrganisationType").empty().append(dropDownListInitOption);
+            $("#DropDownListRole").empty().append(dropDownListInitOption);
             $.each(data, function (index, item) {
-                $("#DropDownListOrganisationType").append(new Option(item.description, item.id));
+                $("#DropDownListRole").append(new Option(item.description, item.id));
             });
         },
         complete: function () {
@@ -25,18 +26,19 @@ function getvOrganisationTypeList() {
         }
     });
 }
-function getvCountryList() {
+function getCompanyList() {
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/populatevCountryListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACUserManagement/populateCompanyListByParam",
         type: "GET",
+        data: { operationType: operationType },
         dataType: "json",
         beforeSend: function () {
 
         },
         success: function (data) {
-            $("#DropDownListCountry").empty().append(dropDownListInitOption);
+            $("#DropDownListCompany").empty().append(dropDownListInitOption);
             $.each(data, function (index, item) {
-                $("#DropDownListCountry").append(new Option(item.description, item.id));
+                $("#DropDownListCompany").append(new Option(item.description, item.id));
             });
         },
         complete: function () {
@@ -47,25 +49,29 @@ function getvCountryList() {
         }
     });
 }
-function getvCityList(cityId) {
-    var countryId = $("#DropDownListCountry :selected").val();
-    if (!countryId || countryId == "-1") {
-        $("#DropDownListCity").empty().append(dropDownListInitOption);
+function getBranchList(branchId) {
+    var companyId = $("#DropDownListCompany :selected").val();
+    if (!companyId || companyId == "-1") {
+        $("#DropDownListBranch").empty().append(dropDownListInitOption);
+        $("#DropDownListAllowedBranch").empty().append(dropDownListInitOption);
         return;
     }
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/populatevCityListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACUserManagement/populateBranchListByParam",
         type: "GET",
-        data: { countryId: countryId },
+        data: { operationType: operationType, companyId: companyId, },
         dataType: "json",
         beforeSend: function () {
 
         },
         success: function (data) {
-            $("#DropDownListCity").empty().append(dropDownListInitOption);
+            $("#DropDownListBranch").empty().append(dropDownListInitOption);
+            $("#DropDownListAllowedBranch").empty().append(dropDownListInitOption);
+
             $.each(data, function (index, item) {
-                var selectedOption = (item.id == cityId);
-                $("#DropDownListCity").append(new Option(item.description, item.id, selectedOption, selectedOption));
+                var selectedOption = (item.id == branchId);
+                $("#DropDownListBranch").append(new Option(item.description, item.id, selectedOption, selectedOption));
+                $("#DropDownListAllowedBranch").append(new Option(item.description, item.id, selectedOption, selectedOption));
             });
         },
         complete: function () {
@@ -76,12 +82,44 @@ function getvCityList(cityId) {
         }
     });
 }
+function getEmployeeList(employeeId) {
+    var companyId = $("#DropDownListCompany :selected").val();
+    if (!companyId || companyId == "-1") {
+        $("#DropDownListEmployee").empty().append(dropDownListInitOption);
+        return;
+    }
+    $.ajax({
+        url: window.basePath + "ApplicationConfiguration/ACUserManagement/populateEmployeeListByParam",
+        type: "GET",
+        data: { operationType: operationType, companyId: companyId },
+        dataType: "json",
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListEmployee").empty().append(dropDownListInitOption);
+            $.each(data, function (index, item) {
+                var selectedOption = (item.id == employeeId);
+                $("#DropDownListEmployee").append(new Option(item.description, item.id, selectedOption, selectedOption));
+            });
+        },
+        complete: function () {
+
+        },
+        error: function (error) {
+            console.error("Error: " + error);
+        }
+    });
+
+}
 
 /* ------ Change Cases DDL's ------ */
 function changeEventHandler() {
-    $("#DropDownListCountry").on("change", function () {
-        var cityId = 23;
-        getvCityList(cityId);
+    $("#DropDownListCompany").on("change", function () {
+        var branchId = -1;
+        var employeeId = -1;
+        getBranchList(branchId);
+        getEmployeeList(employeeId);
     });
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
         if (validater()) {
@@ -93,8 +131,8 @@ function changeEventHandler() {
 
 /* ------ Call Initial Components ------ */
 function initialize() {
-    getvOrganisationTypeList();
-    getvCountryList();
+    getvRoleList();
+    getCompanyList();
     const intputMasking = new UIMasking();
     intputMasking.initialize();
     $('.select2').select2({
@@ -105,7 +143,7 @@ function initialize() {
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ACBranchForm");
+    var form = document.getElementById("ACUserForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -125,28 +163,32 @@ function createUpdateDataIntoDB() {
     var operationType = $("#OperationType").val();
     var guID = $("#GuID").val();
     var description = $("#TextBoxDescription").val();
-    var organisationTypeId = $("#DropDownListOrganisationType :selected").val();
-    var countryId = $("#DropDownListCountry :selected").val();
-    var cityId = $("#DropDownListCity :selected").val();
+    var password = $("#TextBoxPassword").val();
     var contact = $("#TextBoxContact").val();
     var email = $("#TextBoxEmail").val();
-    var ntnNumber = $("#TextBoxNTNNumber").val();
-    var address = $("#TextAreaAddress").val();
+    var roleId = $("#DropDownListRole :selected").val();
+    var companyId = $("#DropDownListCompany :selected").val();
+    var branchId = $("#DropDownListBranch :selected").val();
+    var allowedBranchIds = $("#DropDownListAllowedBranch").val();
+    var employeeId = $("#DropDownListEmployee :selected").val();
+
 
     var jsonData = {
         OperationType: operationType,
         GuID: guID ? guID : null,
-        OrganisationTypeId: organisationTypeId,
         Description: description,
-        CountryId: countryId,
-        CityId: cityId,
+        Password: password,
         Contact: contact,
         Email: email,
-        NTNNumber: ntnNumber,
-        Address: address
+        RoleId: roleId,
+        CompanyId: companyId,
+        BranchId: branchId,
+        AllowedBranchIds: allowedBranchIds.toString(),
+        EmployeeId: employeeId,
     };
+    console.log(jsonData)
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACBranchManagement/createUpdateBranch",
+        url: window.basePath + "ApplicationConfiguration/ACUserManagement/createUpdateUser",
         type: "POST",
         data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
@@ -157,7 +199,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#ACBranchForm").removeClass('was-validated');
+                $("#ACUserForm").removeClass('was-validated');
             }
             else {
                 toastr.info(response.message);

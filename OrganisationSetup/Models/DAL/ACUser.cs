@@ -14,20 +14,15 @@ public partial class ACUser
     public string? Description { get; set; }
 
     public string? Password { get; set; }
+    public string? Contact { get; set; }
 
     public string? Email { get; set; }
-
-    public string? Contact { get; set; }
 
     public int? EmployeeId { get; set; }
 
     public int? RoleId { get; set; }
 
     public string? AllowedBranchIds { get; set; }
-
-    public bool? IsLogIn { get; set; }
-
-    public bool? IsDeveloper { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 
@@ -37,7 +32,7 @@ public partial class ACUser
 
     public int? UpdatedBy { get; set; }
 
-    public int? DocType { get; set; }
+    public int? DocumentType { get; set; }
 
     public int? DocumentStatus { get; set; }
 

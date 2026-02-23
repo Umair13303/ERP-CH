@@ -5,7 +5,8 @@
         public enum Area
         {
             ApplicationConfiguration=1,
-            AIMSCHConfiguration = 2,
+            AccountFinance=2,
+            AIMSCHConfiguration = 3,
         }
         public enum Controller
         {

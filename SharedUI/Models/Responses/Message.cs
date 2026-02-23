@@ -1,6 +1,10 @@
-﻿using System;
+﻿using SharedUI.Models.Configurations;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -58,5 +62,9 @@ namespace SharedUI.Models.Responses
                 _ => "Unknown HTTP Response Code"
             };
         }
+        public static readonly List<DDLItem> ddlEmployee = new List<DDLItem>
+        {
+            new DDLItem { Id = 0, Description = "Attach Employee On Later Stage" }
+        };
     }
 }

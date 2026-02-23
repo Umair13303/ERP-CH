@@ -53,9 +53,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IOSDataLayer, OSDataLayerRepository>();
-builder.Services.AddScoped<IApplicationConfigurationUpsertService, ApplicationConfigurationUpsertService>();
-builder.Services.AddScoped<ICommonsServices, CommonServices>();
-builder.Services.AddScoped<IApplicationConfigurationValidationService, ApplicationConfigurationValidationService>();
+builder.Services.AddScoped<ICommon, CommonServices>();
+builder.Services.AddScoped<IApplicationConfigurationUpsert, ApplicationConfigurationUpsertService>();
+builder.Services.AddScoped<IApplicationConfigurationValidation, ApplicationConfigurationValidationService>();
+builder.Services.AddScoped<IApplicationConfigurationRetriever, ApplicationConfigurationRetrieverService>();
+
 #endregion
 var app = builder.Build();
 var pathBase = builder.Configuration["PathBase"];

@@ -5,13 +5,16 @@ using SharedUI.Models.ViewModels;
 
 namespace OrganisationSetup.Services
 {
-    public interface ICommonsServices
+    public interface ICommon
     {
         Task<List<vCountry>> populateOrganisationTypeByParam();
         Task<List<vCountry>> populateCountryByParam();
         Task<List<vCity>> populateCityByParam(int? countryId);
+        Task<List<vCity>> populateRoleByParam();
+
+
     }
-    public class CommonServices : ICommonsServices
+    public class CommonServices : ICommon
     {
         private readonly ERPOrganisationSetupContext _context;
 
@@ -35,5 +38,11 @@ namespace OrganisationSetup.Services
             var result = await _context.vCities.AsNoTracking().Where(x=> x.CountryId == countryId).ToListAsync();
             return result;
         }
+        public async Task<List<vCity>> populateRoleByParam()
+        {
+            var result = await _context.vCities.AsNoTracking().Take(10).ToListAsync();
+            return result;
+        }
+
     }
 }
