@@ -10,6 +10,8 @@ namespace SharedUI.Models.Enums
     {
         acCompany_ApplicationConfiguration=1,
         acBranch_ApplicationConfiguration = 2,
+        afChartOfAccount_InventoryConfiguration = 3,
+
 
     }
 }

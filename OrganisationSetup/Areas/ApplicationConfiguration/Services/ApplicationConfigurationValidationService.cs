@@ -26,11 +26,11 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             switch (operationType)
             {
                 case nameof(OperationType.INSERT_DATA_INTO_DB):
-                    return !await _eRPOSContext.ACCompanies
+                    return !await _eRPOSContext.ACCompany
                         .AnyAsync(x => x.Description!.Trim().ToLower() == description!.Trim().ToLower());
 
                 case nameof(OperationType.UPDATE_DATA_INTO_DB):
-                    bool exists = await _eRPOSContext.ACCompanies.AnyAsync(x => x.GuID == guID);
+                    bool exists = await _eRPOSContext.ACCompany.AnyAsync(x => x.GuID == guID);
 
                     return exists;
 
@@ -45,11 +45,11 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             switch (operationType)
             {
                 case nameof(OperationType.INSERT_DATA_INTO_DB):
-                    return !await _eRPOSContext.ACBranches
+                    return !await _eRPOSContext.ACBranch
                         .AnyAsync(x => x.Description!.Trim().ToLower() == description!.Trim().ToLower());
 
                 case nameof(OperationType.UPDATE_DATA_INTO_DB):
-                    bool exists = await _eRPOSContext.ACBranches.AnyAsync(x => x.GuID == guID);
+                    bool exists = await _eRPOSContext.ACBranch.AnyAsync(x => x.GuID == guID);
                     return exists;
                 default:
                     return false;
@@ -62,11 +62,11 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             switch (operationType)
             {
                 case nameof(OperationType.INSERT_DATA_INTO_DB):
-                    return !await _eRPOSContext.ACUsers
+                    return !await _eRPOSContext.ACUser
                         .AnyAsync(x => x.Description!.Trim().ToLower() == description!.Trim().ToLower());
 
                 case nameof(OperationType.UPDATE_DATA_INTO_DB):
-                    bool exists = await _eRPOSContext.ACUsers.AnyAsync(x => x.GuID == guID);
+                    bool exists = await _eRPOSContext.ACUser.AnyAsync(x => x.GuID == guID);
                     return exists;
                 default:
                     return false;

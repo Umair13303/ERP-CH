@@ -7,12 +7,13 @@ namespace OrganisationSetup.Services
 {
     public interface ICommon
     {
-        Task<List<vCountry>> populateOrganisationTypeByParam();
+        Task<List<vOrganisationType>> populateOrganisationTypeByParam();
         Task<List<vCountry>> populateCountryByParam();
         Task<List<vCity>> populateCityByParam(int? countryId);
-        Task<List<vCity>> populateRoleByParam();
-
-
+        Task<List<vRole>> populateRoleByParam();
+        Task<List<vAccountType>> populateAccountTypeByParam();
+        Task<List<vAccountCatagory>> populateAccountCatagoryByParam(int? accountTypeId);
+        Task<List<vFinancialStatement>> populateFinancialStatementByParam();
     }
     public class CommonServices : ICommon
     {
@@ -23,26 +24,40 @@ namespace OrganisationSetup.Services
             _context = context;
 
         }
-        public async Task<List<vCountry>> populateOrganisationTypeByParam()
+        public async Task<List<vOrganisationType>> populateOrganisationTypeByParam()
         {
-            var result = await _context.vCountries.AsNoTracking().ToListAsync();
+            var result = await _context.vOrganisationType.AsNoTracking().ToListAsync();
             return result;
         }
         public async Task<List<vCountry>> populateCountryByParam()
         {
-            var result = await _context.vCountries.AsNoTracking().ToListAsync();
+            var result = await _context.vCountry.AsNoTracking().ToListAsync();
             return result;
         }
         public async Task<List<vCity>> populateCityByParam(int? countryId)
         {
-            var result = await _context.vCities.AsNoTracking().Where(x=> x.CountryId == countryId).ToListAsync();
+            var result = await _context.vCity.AsNoTracking().Where(x=> x.CountryId == countryId).ToListAsync();
             return result;
         }
-        public async Task<List<vCity>> populateRoleByParam()
+        public async Task<List<vRole>> populateRoleByParam()
         {
-            var result = await _context.vCities.AsNoTracking().Take(10).ToListAsync();
+            var result = await _context.vRole.AsNoTracking().ToListAsync();
             return result;
         }
-
+        public async Task<List<vAccountType>> populateAccountTypeByParam()
+        {
+            var result = await _context.vAccountType.AsNoTracking().ToListAsync();
+            return result;
+        }
+        public async Task<List<vAccountCatagory>> populateAccountCatagoryByParam(int? accountTypeId)
+        {
+            var result = await _context.vAccountCatagory.AsNoTracking().Where(x=> x.AccountTypeId == accountTypeId).ToListAsync();
+            return result;
+        }
+        public async Task<List<vFinancialStatement>> populateFinancialStatementByParam()
+        {
+            var result = await _context.vFinancialStatement.AsNoTracking().ToListAsync();
+            return result;
+        }
     }
 }

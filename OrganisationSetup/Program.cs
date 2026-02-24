@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OrganisationSetup.Areas.AccountNfinance.Services;
 using OrganisationSetup.Areas.ApplicationConfiguration.Services;
 using OrganisationSetup.Models.DAL;
 using OrganisationSetup.Models.DAL.StoredProcedure;
@@ -57,6 +58,10 @@ builder.Services.AddScoped<ICommon, CommonServices>();
 builder.Services.AddScoped<IApplicationConfigurationUpsert, ApplicationConfigurationUpsertService>();
 builder.Services.AddScoped<IApplicationConfigurationValidation, ApplicationConfigurationValidationService>();
 builder.Services.AddScoped<IApplicationConfigurationRetriever, ApplicationConfigurationRetrieverService>();
+
+builder.Services.AddScoped<IAccountNfinanceUpsert, AccountNfinanceUpsertService>();
+builder.Services.AddScoped<IAccountNfinanceValidation, AccountNfinanceValidationService>();
+builder.Services.AddScoped<IAccountNfinanceRetriever, AccountNfinanceRetrieverService>();
 
 #endregion
 var app = builder.Build();

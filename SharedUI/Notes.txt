@@ -208,7 +208,8 @@ Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPOrganisation
 Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPOrganisationSetup;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPOrganisationSetupContext -Force -NoOnConfiguring --use-database-names --no-build
 Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPOrganisationSetup;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPOrganisationSetupContext -Force -NoOnConfiguring -UseDatabaseNames -NoBuild
 ------------------------------------------ NUGET COMMANDS
-Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPClothHouse;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPClothHouseContext -Force -NoOnConfiguring
+
+Scaffold-DbContext "Server=DESKTOP-U4KUL21\SQLEXPRESS01;Database=ERPOrganisationSetup;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DAL -Context ERPOrganisationSetupContext -Force -NoOnConfiguring -UseDatabaseNames -NoPluralize
 1. IN GATEWAY: Install-Package Yarp.ReverseProxy
 2. IN GATEWAY, ORGANISATIONSETUP : Install-Package Microsoft.AspNetCore.Authentication.JwtBearer -Version 8.0.23
 3. IN GATEWAY, ORGANISATIONSETUP : Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 8.0.23

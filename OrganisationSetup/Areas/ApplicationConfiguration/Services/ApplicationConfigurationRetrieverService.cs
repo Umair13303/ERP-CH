@@ -46,7 +46,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             switch (filterConditionId)
             {
                 case ((int?)FilterConditions.acCompany_ApplicationConfiguration):
-                    return await _eRPOSContext.ACCompanies.AsNoTracking()
+                    return await _eRPOSContext.ACCompany.AsNoTracking()
                         .Where(x =>
                         x.Status == true
                         && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new ACCompany
@@ -78,7 +78,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             switch (filterConditionId)
             {
                 case ((int?)FilterConditions.acBranch_ApplicationConfiguration):
-                    return await _eRPOSContext.ACBranches.AsNoTracking()
+                    return await _eRPOSContext.ACBranch.AsNoTracking()
                         .Where(x =>
                         x.CompanyId == companyId
                         && x.Status == true

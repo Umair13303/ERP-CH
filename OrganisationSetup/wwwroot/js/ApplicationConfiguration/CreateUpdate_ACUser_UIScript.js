@@ -186,7 +186,6 @@ function createUpdateDataIntoDB() {
         AllowedBranchIds: allowedBranchIds.toString(),
         EmployeeId: employeeId,
     };
-    console.log(jsonData)
     $.ajax({
         url: window.basePath + "ApplicationConfiguration/ACUserManagement/createUpdateUser",
         type: "POST",

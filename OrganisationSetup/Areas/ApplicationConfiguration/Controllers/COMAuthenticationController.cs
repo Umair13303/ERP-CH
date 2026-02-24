@@ -49,11 +49,11 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
                 ModelState.AddModelError(string.Empty, SharedUI.Models.Responses.Message.serverResponse((int?)Code.NotFound));
                 return View(nameof(Login), postedData);
             }
-            var user = await _eRPOSContext.ACUsers.FirstOrDefaultAsync(u => u.Description == postedData.Description && u.Password == postedData.Password);
+            var user = await _eRPOSContext.ACUser.FirstOrDefaultAsync(u => u.Description == postedData.Description && u.Password == postedData.Password);
             if (user != null)
             {
-                var company = await _eRPOSContext.ACCompanies.FirstOrDefaultAsync(c => c.Id == user.CompanyId);
-                var branch = await _eRPOSContext.ACBranches.FirstOrDefaultAsync(b => b.Id == user.BranchId);
+                var company = await _eRPOSContext.ACCompany.FirstOrDefaultAsync(c => c.Id == user.CompanyId);
+                var branch = await _eRPOSContext.ACBranch.FirstOrDefaultAsync(b => b.Id == user.BranchId);
                 #region IN CASE: USER LOGIN SUCCESS -- GET RIGHTS
                 if (user != null)
                 {
