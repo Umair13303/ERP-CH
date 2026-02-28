@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <form id="ICategoryForm">
+    <form id="ACSubCategoryForm">
         @Html.Hidden("OperationType", (string)ViewBag.OperationType)
         @Html.Hidden("GuID")
 
@@ -33,18 +33,10 @@
             <div class="card-body">
                 <div class="col-12 mt-4">
                     <div class="bg-light rounded-2 border-start border-primary border-4 p-2">
-                        <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> CATEGORY INFORMATION</span>
+                        <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> SubCategory INFORMATION</span>
                     </div>
                 </div>
 
-                <div class="row mb-0">
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            @Html.Label("DropDownListLocation", "Location", new { @class = "col-form-label" })
-                            @Html.DropDownList("LocationId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", required = "required", @id = "DropDownListLocation" })
-                        </div>
-                    </div>
-                </div>
                 <div class="row mb-0">
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
@@ -66,10 +58,15 @@
                             @Html.DropDownList("SectionId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", required = "required", @id = "DropDownListSection" })
                         </div>
                     </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            @Html.Label("DropDownListCategory", "Category", new { @class = "col-form-label" })
+                            @Html.DropDownList("CategoryId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", required = "required", @id = "DropDownListCategory" })
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </form>
 </div>
-
-<script src="~/js/Inventory/CreateUpdate_ICategory_UIScript.js"></script>
+<script src="~/js/applicationconfiguration/createupdate_acsubcategory_uiscript.js"></script>

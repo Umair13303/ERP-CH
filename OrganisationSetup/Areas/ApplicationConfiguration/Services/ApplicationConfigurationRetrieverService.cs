@@ -14,8 +14,9 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
     {
         Task<List<ACCompany>> populateCompanyByParam(string operationType, int? filterConditionId);
         Task<List<ACBranch>> populateBranchByParam(string operationType, int? filterConditionId, int? companyId);
-        Task<List<ACDepartment>> populateDepartmentByParam(string operationType, int? filterConditionId, int? locationId);
+        Task<List<ACDepartment>> populateDepartmentByParam(string operationType, int? filterConditionId);
         Task<List<ACSection>> populateSectionByParam(string operationType, int? filterConditionId, int? departmentId);
+        Task<List<ACCategory>> populateCategoryByParam(string operationType, int? filterConditionId, int? sectionId);
     }
     public class ApplicationConfigurationRetrieverService : IApplicationConfigurationRetriever
     {
@@ -96,7 +97,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                     return new List<ACBranch>();
             }
         }
-        public async Task<List<ACDepartment>> populateDepartmentByParam(string operationType, int? filterConditionId, int? locationId)
+        public async Task<List<ACDepartment>> populateDepartmentByParam(string operationType, int? filterConditionId)
         {
             var userInfo = TempUser.Fill(_httpContextAccessor);
             if (!userInfo.IsAuthenticated)
@@ -108,11 +109,10 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             if (documentStatusIds == null) return new List<ACDepartment>();
             switch (filterConditionId)
             {
-                case ((int?)FilterConditions.acDepartment_Operation_ByLocation):
+                case ((int?)FilterConditions.acDepartment_Operation_ByCompany):
                     return await _eRPOSContext.ACDepartment.AsNoTracking()
                         .Where(x =>
                         x.CompanyId == userInfo.CompanyId
-                        && x.LocationId == locationId
                         && x.Status == true
                         && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new ACDepartment
                         {
@@ -152,6 +152,35 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                     return new List<ACSection>();
             }
         }
+        public async Task<List<ACCategory>> populateCategoryByParam(string operationType, int? filterConditionId, int? sectionId)
+        {
+            var userInfo = TempUser.Fill(_httpContextAccessor);
+            if (!userInfo.IsAuthenticated)
+            {
+                return new List<ACCategory>();
+            }
+
+            int?[]? documentStatusIds = await _commonsServices.getDocumentStatusByParam(operationType);
+            if (documentStatusIds == null) return new List<ACCategory>();
+            switch (filterConditionId)
+            {
+                case ((int?)FilterConditions.ACCategory_Operation_BySection):
+                    return await _eRPOSContext.ACCategory.AsNoTracking()
+                        .Where(x =>
+                        x.CompanyId == userInfo.CompanyId
+                        && x.SectionId == sectionId
+                        && x.Status == true
+                        && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new ACCategory
+                        {
+                            Id = x.Id,
+                            GuID = x.GuID,
+                            Description = x.Description
+                        }).ToListAsync();
+                default:
+                    return new List<ACCategory>();
+            }
+        }
+
     }
 
 }

@@ -36,15 +36,9 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
 
         #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL
         [HttpGet]
-        public async Task<IActionResult> populateBranchListByParam(string operationType)
+        public async Task<IActionResult> populateDepartmentListByParam(string operationType)
         {
-            var result = await _acrService.populateBranchByParam(operationType, (int?)FilterConditions.acBranch_Operation_ByAllowedBranches, null);
-            return Json(result);
-        }
-        [HttpGet]
-        public async Task<IActionResult> populateDepartmentListByParam(string operationType,int? locationId)
-        {
-            var result = await _acrService.populateDepartmentByParam(operationType, (int?)FilterConditions.acDepartment_Operation_ByLocation, locationId);
+            var result = await _acrService.populateDepartmentByParam(operationType, (int?)FilterConditions.acDepartment_Operation_ByCompany);
             return Json(result);
         }
         #endregion

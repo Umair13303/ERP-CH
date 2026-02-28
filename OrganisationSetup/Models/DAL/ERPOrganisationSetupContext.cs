@@ -23,7 +23,7 @@ public partial class ERPOrganisationSetupContext : DbContext
 
     public virtual DbSet<AFChartOfAccount> AFChartOfAccount { get; set; }
 
-    public virtual DbSet<ICategory> ICategory { get; set; }
+    public virtual DbSet<ACCategory> ACCategory { get; set; }
 
     public virtual DbSet<vAccountCatagory> vAccountCatagory { get; set; }
 
@@ -87,7 +87,7 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<ICategory>(entity =>
+        modelBuilder.Entity<ACCategory>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__ICategor__3214EC07D6924099");
 

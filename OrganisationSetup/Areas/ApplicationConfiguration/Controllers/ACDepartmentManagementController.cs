@@ -28,14 +28,6 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
             ViewBag.DisplayName = ui.DisplayName;
             return View();
         }
-        #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL
-        [HttpGet]
-        public async Task<IActionResult> populateBranchListByParam(string operationType)
-        {
-            var result = await _acrService.populateBranchByParam(operationType, (int?)FilterConditions.acBranch_Operation_ByAllowedBranches, null);
-            return Json(result);
-        }
-        #endregion
 
 
         #region PORTION CONTAIN CODE TO: ADD/EDIT/DELETE DOCUMENT

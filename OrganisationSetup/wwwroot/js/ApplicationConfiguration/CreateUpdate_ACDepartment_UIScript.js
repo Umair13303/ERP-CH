@@ -3,30 +3,6 @@ var operationType = $("#OperationType").val();
 var dropDownListInitOption = "<option value='-1'>Select an option</option>";
 
 
-/* ------ Depending DDL's ------ */
-function getLocationList() {
-    $.ajax({
-        url: window.basePath + "Inventory/ICategoryManagement/populateBranchListByParam",
-        type: "GET",
-        data: { operationType: operationType },
-        dataType: "json",
-        beforeSend: function () {
-
-        },
-        success: function (data) {
-            $("#DropDownListLocation").empty().append(dropDownListInitOption);
-            $.each(data, function (index, item) {
-                $("#DropDownListLocation").append(new Option(item.description, item.id));
-            });
-        },
-        complete: function () {
-
-        },
-        error: function (error) {
-            console.error("Error: " + error);
-        }
-    });
-}
 /* ------ Change Cases DDL's ------ */
 function changeEventHandler() {
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
@@ -39,7 +15,6 @@ function changeEventHandler() {
 
 /* ------ Call Initial Components ------ */
 function initialize() {
-    getLocationList();
     changeEventHandler();
     $('.select2').select2({
         theme: 'bootstrap-5',
@@ -67,13 +42,11 @@ function validater() {
 function createUpdateDataIntoDB() {
     var operationType = $("#OperationType").val();
     var guID = $("#GuID").val();
-    var locationId = $("#DropDownListLocation :selected").val();
     var description = $("#TextBoxDescription").val();
 
     var jsonData = {
         OperationType: operationType,
         GuID: guID ? guID : null,
-        LocationId: locationId,
         Description: description,
     };
     $.ajax({

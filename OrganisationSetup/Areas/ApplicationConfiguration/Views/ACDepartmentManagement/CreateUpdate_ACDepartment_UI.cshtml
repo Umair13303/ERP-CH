@@ -64,14 +64,6 @@
                 <div class="row mb-0">
                     <div class="col-sm-12 col-md-8">
                         <div class="form-group">
-                            @Html.Label("DropDownListLocation", "Location", new { @class = "col-form-label" })
-                            @Html.DropDownList("LocationId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", @id = "DropDownListLocation" })
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-0">
-                    <div class="col-sm-12 col-md-8">
-                        <div class="form-group">
                             @Html.Label("TextBoxDescription", "Description", new { @class = "col-form-label" })
                             @Html.TextBox("Description", null, new { @class = "form-control form-control-sm", required = "required", placeholder = "Provide Description!", @id = "TextBoxDescription" })
                         </div>

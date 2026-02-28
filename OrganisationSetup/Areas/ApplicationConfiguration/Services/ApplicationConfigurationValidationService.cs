@@ -9,7 +9,10 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
         Task<bool> isACCompanyValid(string? operationType, Guid? guID, string? description);
         Task<bool> isACBranchValid(string? operationType, Guid? guID, string? description);
         Task<bool> isACUserValid(string? operationType, Guid? guID, string? description);
-        Task<bool> isACDepartmentValid(string? operationType, Guid? guID, int? locationId, string? description);
+        Task<bool> isACDepartmentValid(string? operationType, Guid? guID, string? description);
+        Task<bool> isACSectionValid(string? operationType, Guid? guID, int? departmentId, string? description);
+        Task<bool> isACCategoryValid(string? operationType, Guid? guID, int? sectionId, string? description);
+
     }
 
     public class ApplicationConfigurationValidationService : IApplicationConfigurationValidation
@@ -74,24 +77,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             }
         }
 
-        public async Task<bool> isACDepartmentValid(string? operationType, Guid? guID,int? locationId, string? description)
-        {
-            if (string.IsNullOrEmpty(operationType)) return false;
-            switch (operationType)
-            {
-                case nameof(OperationType.INSERT_DATA_INTO_DB):
-                    return !await _eRPOSContext.ACDepartment
-                        .AnyAsync(x => x.Description!.Trim().ToLower() == description!.Trim().ToLower() && x.LocationId == locationId);
-
-                case nameof(OperationType.UPDATE_DATA_INTO_DB):
-                    bool exists = await _eRPOSContext.ACDepartment.AnyAsync(x => x.GuID == guID);
-                    return exists;
-                default:
-                    return false;
-            }
-        }
-
-        public async Task<bool> isACSectionValid(string? operationType, Guid? guID, int? departmentId, string? description )
+        public async Task<bool> isACDepartmentValid(string? operationType, Guid? guID, string? description)
         {
             if (string.IsNullOrEmpty(operationType)) return false;
             switch (operationType)
@@ -102,6 +88,39 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
 
                 case nameof(OperationType.UPDATE_DATA_INTO_DB):
                     bool exists = await _eRPOSContext.ACDepartment.AnyAsync(x => x.GuID == guID);
+                    return exists;
+                default:
+                    return false;
+            }
+        }
+
+        public async Task<bool> isACSectionValid(string? operationType, Guid? guID, int? departmentId, string? description)
+        {
+            if (string.IsNullOrEmpty(operationType)) return false;
+            switch (operationType)
+            {
+                case nameof(OperationType.INSERT_DATA_INTO_DB):
+                    return !await _eRPOSContext.ACSection
+                        .AnyAsync(x => x.Description!.Trim().ToLower() == description!.Trim().ToLower());
+
+                case nameof(OperationType.UPDATE_DATA_INTO_DB):
+                    bool exists = await _eRPOSContext.ACSection.AnyAsync(x => x.GuID == guID);
+                    return exists;
+                default:
+                    return false;
+            }
+        }
+       public async Task<bool> isACCategoryValid(string? operationType, Guid? guID,int? sectionId, string? description)
+        {
+            if (string.IsNullOrEmpty(operationType)) return false;
+            switch (operationType)
+            {
+                case nameof(OperationType.INSERT_DATA_INTO_DB):
+                    return !await _eRPOSContext.ACCategory
+                        .AnyAsync(x => x.Description!.Trim().ToLower() == description!.Trim().ToLower() && x.SectionId == sectionId);
+
+                case nameof(OperationType.UPDATE_DATA_INTO_DB):
+                    bool exists = await _eRPOSContext.ACCategory.AnyAsync(x => x.GuID == guID);
                     return exists;
                 default:
                     return false;

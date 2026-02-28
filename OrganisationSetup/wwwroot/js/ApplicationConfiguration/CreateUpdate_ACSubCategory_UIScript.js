@@ -1,11 +1,12 @@
 ﻿/* ------ Global Variable ------ */
 var operationType = $("#OperationType").val();
-var dropDownListInitOption = "<option value='-1'>Select an option</option>";
+var dropDownListInitOption = "<option value='-1' " + (operationType == "INSERT_INTO_DB" ? "selected='selected'" : "") + ">Select an option</option>";
 
 /* ------ Depending DDL's ------ */
+
 function getDepartmentList() {
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACSectionManagement/populateDepartmentListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/populateDepartmentListByParam",
         type: "GET",
         dataType: "json",
         data: { operationType: operationType },
@@ -19,6 +20,53 @@ function getDepartmentList() {
             });
         },
         complete: function () {
+            
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+function getSectionList(departmentId,sectionId) {
+    $.ajax({
+        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/populateSectionListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType, departmentId: departmentId },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListSection").empty().append(dropDownListInitOption);
+            $.each(data, function (index, item) {
+                var selectedOption = (item.id == sectionId);
+                $("#DropDownListSection").append(new Option(item.description, item.id, selectedOption, selectedOption));
+            });
+        },
+        complete: function () {
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+function getCategoryList(sectionId, categoryId) {
+    $.ajax({
+        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/populateCategoryListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType, sectionId: sectionId },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListCategory").empty().append(dropDownListInitOption);
+            $.each(data, function (index, item) {
+                var selectedOption = (item.id == categoryId);
+                $("#DropDownListCategory").append(new Option(item.description, item.id,selectedOption, selectedOption));
+            });
+        },
+        complete: function () {
         },
         error: function (xhr, status, error) {
             console.error("Error: " + error);
@@ -28,7 +76,16 @@ function getDepartmentList() {
 
 /* ------ Change Cases DDL's ------ */
 function changeEventHandler() {
-    getDepartmentList();
+    $("#DropDownListDepartment").on("change", function () {
+        var sectionId = -1;
+        var departmentId = $("#DropDownListDepartment :selected").val();
+        getSectionList(departmentId,sectionId);
+    });
+    $("#DropDownListDepartment,#DropDownListSection").on("change", function () {
+        var sectionId = -1;
+        var departmentId = $("#DropDownListSection :selected").val();
+        getCategoryList(departmentId, sectionId);
+    });
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
         if (validater()) {
             e.preventDefault();
@@ -50,7 +107,7 @@ function initialize() {
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ACSectionForm");
+    var form = document.getElementById("ACSubCategoryForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -71,15 +128,20 @@ function createUpdateDataIntoDB() {
     var guID = $("#GuID").val();
     var description = $("#TextBoxDescription").val();
     var departmentId = $("#DropDownListDepartment :selected").val();
+    var sectionId = $("#DropDownListSection :selected").val();
+    var categoryId = $("#DropDownListCategory :selected").val();
 
     var jsonData = {
         OperationType: operationType,
         GuID: guID ? guID : null,
         Description: description,
         DepartmentId: departmentId,
+        SectionId: sectionId,
+        CategoryId: categoryId,
+
     };
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACSectionManagement/createUpdateSection",
+        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/createUpdateSubCategory",
         type: "POST",
         data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
@@ -90,7 +152,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#ACSectionForm").removeClass('was-validated');
+                $("#ACCategoryForm").removeClass('was-validated');
             }
             else {
                 toastr.info(response.message);
@@ -114,7 +176,3 @@ $(function () {
     if (typeof setupGlobalAjax === "function") setupGlobalAjax();
     initialize();
 });
-
-function LoadDummyRecord() {
-    $("#DropDownListLocation").val(1).trigger("change");
-}

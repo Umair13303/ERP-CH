@@ -3,43 +3,19 @@ var operationType = $("#OperationType").val();
 var dropDownListInitOption = "<option value='-1' " + (operationType == "INSERT_INTO_DB" ? "selected='selected'" : "") + ">Select an option</option>";
 
 /* ------ Depending DDL's ------ */
-function getLocationList() {
+function getDepartmentList() {
     $.ajax({
-        url: window.basePath + "Inventory/ICategoryManagement/populateBranchListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/populateDepartmentListByParam",
         type: "GET",
+        dataType: "json",
         data: { operationType: operationType },
-        dataType: "json",
-        beforeSend: function () {
-
-        },
-        success: function (data) {
-            $("#DropDownListLocation").empty().append(dropDownListInitOption);
-            $.each(data, function (index, item) {
-                $("#DropDownListLocation").append(new Option(item.description, item.id));
-            });
-        },
-        complete: function () {
-
-        },
-        error: function (error) {
-            console.error("Error: " + error);
-        }
-    });
-}
-function getDepartmentList(locationId,departmentId) {
-    $.ajax({
-        url: window.basePath + "Inventory/ICategoryManagement/populateDepartmentListByParam",
-        type: "GET",
-        dataType: "json",
-        data: { operationType: operationType, locationId: locationId },
         beforeSend: function () {
 
         },
         success: function (data) {
             $("#DropDownListDepartment").empty().append(dropDownListInitOption);
             $.each(data, function (index, item) {
-                var selectedOption = (item.id == departmentId);
-                $("#DropDownListDepartment").append(new Option(item.description, item.id, selectedOption, selectedOption));
+                $("#DropDownListDepartment").append(new Option(item.description, item.id));
             });
         },
         complete: function () {
@@ -52,7 +28,7 @@ function getDepartmentList(locationId,departmentId) {
 }
 function getSectionList(departmentId,sectionId) {
     $.ajax({
-        url: window.basePath + "Inventory/ICategoryManagement/populateSectionListByParam",
+        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/populateSectionListByParam",
         type: "GET",
         dataType: "json",
         data: { operationType: operationType, departmentId: departmentId },
@@ -63,8 +39,7 @@ function getSectionList(departmentId,sectionId) {
             $("#DropDownListSection").empty().append(dropDownListInitOption);
             $.each(data, function (index, item) {
                 var selectedOption = (item.id == sectionId);
-                $("#DropDownListSection").append($(new Option(item.description, item.id, selectedOption, selectedOption))
-                );
+                $("#DropDownListSection").append(new Option(item.description, item.id, selectedOption, selectedOption));
             });
         },
         complete: function () {
@@ -77,12 +52,7 @@ function getSectionList(departmentId,sectionId) {
 
 /* ------ Change Cases DDL's ------ */
 function changeEventHandler() {
-    $("#DropDownListLocation").on("change", function () {
-        var departmentId = -1;
-        var locationId = $("#DropDownListLocation :selected").val();
-        getDepartmentList(locationId, departmentId);
-    });
-    $("#DropDownListDepartment,#DropDownListLocation").on("change", function () {
+    $("#DropDownListDepartment").on("change", function () {
         var sectionId = -1;
         var departmentId = $("#DropDownListDepartment :selected").val();
         getSectionList(departmentId,sectionId);
@@ -97,7 +67,7 @@ function changeEventHandler() {
 
 /* ------ Call Initial Components ------ */
 function initialize() {
-    getLocationList();
+    getDepartmentList();
     const intputMasking = new UIMasking();
     intputMasking.initialize();
     $('.select2').select2({
@@ -108,7 +78,7 @@ function initialize() {
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ICategoryForm");
+    var form = document.getElementById("ACCategoryForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -142,7 +112,7 @@ function createUpdateDataIntoDB() {
 
     };
     $.ajax({
-        url: window.basePath + "Inventory/ICategoryManagement/createUpdateCategory",
+        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/createUpdateCategory",
         type: "POST",
         data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
@@ -153,7 +123,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#ICategoryForm").removeClass('was-validated');
+                $("#ACCategoryForm").removeClass('was-validated');
             }
             else {
                 toastr.info(response.message);

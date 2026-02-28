@@ -13,9 +13,9 @@ namespace SharedUI.Models.Enums
 
         afChartOfAccount_Operation_ByCompanyId = 5,
         acBranch_Operation_ByAllowedBranches = 4,
-        acDepartment_Operation_ByLocation = 6,
+        acDepartment_Operation_ByCompany = 6,
         acSection_Operation_ByDepartment = 7,
-        iCategory_Operation_BySection = 8,
+        ACCategory_Operation_BySection = 8,
 
 
 
