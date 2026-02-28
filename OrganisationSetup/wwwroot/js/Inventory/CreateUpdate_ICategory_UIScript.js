@@ -1,7 +1,6 @@
 ﻿/* ------ Global Variable ------ */
 var operationType = $("#OperationType").val();
-var dropDownListInitOption = "<option value='-1'>Select an option</option>";
-
+var dropDownListInitOption = "<option value='-1' " + (operationType == "INSERT_INTO_DB" ? "selected='selected'" : "") + ">Select an option</option>";
 
 /* ------ Depending DDL's ------ */
 function getLocationList() {
@@ -27,8 +26,67 @@ function getLocationList() {
         }
     });
 }
+function getDepartmentList(locationId,departmentId) {
+    $.ajax({
+        url: window.basePath + "Inventory/ICategoryManagement/populateDepartmentListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType, locationId: locationId },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListDepartment").empty().append(dropDownListInitOption);
+            $.each(data, function (index, item) {
+                var selectedOption = (item.id == departmentId);
+                $("#DropDownListDepartment").append(new Option(item.description, item.id, selectedOption, selectedOption));
+            });
+        },
+        complete: function () {
+            
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+function getSectionList(departmentId,sectionId) {
+    $.ajax({
+        url: window.basePath + "Inventory/ICategoryManagement/populateSectionListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType, departmentId: departmentId },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListSection").empty().append(dropDownListInitOption);
+            $.each(data, function (index, item) {
+                var selectedOption = (item.id == sectionId);
+                $("#DropDownListSection").append($(new Option(item.description, item.id, selectedOption, selectedOption))
+                );
+            });
+        },
+        complete: function () {
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+
 /* ------ Change Cases DDL's ------ */
 function changeEventHandler() {
+    $("#DropDownListLocation").on("change", function () {
+        var departmentId = -1;
+        var locationId = $("#DropDownListLocation :selected").val();
+        getDepartmentList(locationId, departmentId);
+    });
+    $("#DropDownListDepartment,#DropDownListLocation").on("change", function () {
+        var sectionId = -1;
+        var departmentId = $("#DropDownListDepartment :selected").val();
+        getSectionList(departmentId,sectionId);
+    });
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
         if (validater()) {
             e.preventDefault();
@@ -40,15 +98,17 @@ function changeEventHandler() {
 /* ------ Call Initial Components ------ */
 function initialize() {
     getLocationList();
-    changeEventHandler();
+    const intputMasking = new UIMasking();
+    intputMasking.initialize();
     $('.select2').select2({
         theme: 'bootstrap-5',
         width: '100%'
     });
+    changeEventHandler();
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ACDepartmentForm");
+    var form = document.getElementById("ICategoryForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -69,15 +129,20 @@ function createUpdateDataIntoDB() {
     var guID = $("#GuID").val();
     var locationId = $("#DropDownListLocation :selected").val();
     var description = $("#TextBoxDescription").val();
+    var departmentId = $("#DropDownListDepartment :selected").val();
+    var sectionId = $("#DropDownListSection :selected").val();
 
     var jsonData = {
         OperationType: operationType,
         GuID: guID ? guID : null,
         LocationId: locationId,
         Description: description,
+        DepartmentId: departmentId,
+        SectionId: sectionId,
+
     };
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACDepartmentManagement/createUpdateDepartment",
+        url: window.basePath + "Inventory/ICategoryManagement/createUpdateCategory",
         type: "POST",
         data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
@@ -88,7 +153,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#ACDepartmentForm").removeClass('was-validated');
+                $("#ICategoryForm").removeClass('was-validated');
             }
             else {
                 toastr.info(response.message);

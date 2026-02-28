@@ -49,13 +49,7 @@ function getCompanyList() {
         }
     });
 }
-function getBranchList(branchId) {
-    var companyId = $("#DropDownListCompany :selected").val();
-    if (!companyId || companyId == "-1") {
-        $("#DropDownListBranch").empty().append(dropDownListInitOption);
-        $("#DropDownListAllowedBranch").empty().append(dropDownListInitOption);
-        return;
-    }
+function getBranchList(companyId,branchId) {
     $.ajax({
         url: window.basePath + "ApplicationConfiguration/ACUserManagement/populateBranchListByParam",
         type: "GET",
@@ -82,12 +76,7 @@ function getBranchList(branchId) {
         }
     });
 }
-function getEmployeeList(employeeId) {
-    var companyId = $("#DropDownListCompany :selected").val();
-    if (!companyId || companyId == "-1") {
-        $("#DropDownListEmployee").empty().append(dropDownListInitOption);
-        return;
-    }
+function getEmployeeList(companyId,employeeId) {
     $.ajax({
         url: window.basePath + "ApplicationConfiguration/ACUserManagement/populateEmployeeListByParam",
         type: "GET",
@@ -118,8 +107,9 @@ function changeEventHandler() {
     $("#DropDownListCompany").on("change", function () {
         var branchId = -1;
         var employeeId = -1;
-        getBranchList(branchId);
-        getEmployeeList(employeeId);
+        var companyId = $("#DropDownListCompany :selected").val();
+        getBranchList(companyId,branchId);
+        getEmployeeList(companyId,employeeId);
     });
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
         if (validater()) {

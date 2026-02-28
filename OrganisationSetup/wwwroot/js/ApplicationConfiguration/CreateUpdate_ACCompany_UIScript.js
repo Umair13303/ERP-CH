@@ -25,12 +25,7 @@ function getvCountryList() {
         }
     });
 }
-function getvCityList(cityId) {
-    var countryId = $("#DropDownListCountry :selected").val();
-    if (!countryId || countryId == "-1") {
-        $("#DropDownListCity").empty().append(dropDownListInitOption);
-        return;
-    }
+function getvCityList(countryId,cityId) {
     $.ajax({
         url: window.basePath + "ApplicationConfiguration/ACCompanyManagement/populatevCityListByParam",
         type: "GET",
@@ -59,7 +54,8 @@ function getvCityList(cityId) {
 function changeEventHandler() {
     $("#DropDownListCountry").on("change", function () {
         var cityId = 23;
-        getvCityList(cityId);
+        var countryId = $("#DropDownListCountry :selected").val();
+        getvCityList(countryId,cityId);
     });
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
         if (validater()) {
@@ -156,3 +152,12 @@ $(function () {
     if (typeof setupGlobalAjax === "function") setupGlobalAjax();
     initialize();
 });
+
+
+/* ------ Load Dummy Record ------ */
+function loadDummyRecord() {
+    $("#TextBoxDescription").val("ZT MEET PROCESSING PRIVATE LIMITED");
+    $("#DropDownListCountry").val(168).trigger('change');
+    getvCityList(168,26);
+}
+

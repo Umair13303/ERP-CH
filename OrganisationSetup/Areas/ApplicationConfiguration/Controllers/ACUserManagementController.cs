@@ -15,7 +15,6 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
     {
         private readonly IApplicationConfigurationUpsert _acuService;
         private readonly IApplicationConfigurationRetriever _acrService;
-
         private readonly ICommon _commonsServices;
         public ACUserManagementController(IApplicationConfigurationUpsert acuService, IApplicationConfigurationRetriever acrService, ICommon commonsServices)
         {
@@ -48,13 +47,13 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
         [HttpGet]
         public async Task<IActionResult> populateCompanyListByParam(string operationType)
         {
-            var result = await _acrService.populateCompanyByParam(operationType,(int?)FilterConditions.acCompany_ApplicationConfiguration);
+            var result = await _acrService.populateCompanyByParam(operationType,(int?)FilterConditions.acCompany_ApplicationConfiguration_SolutionSetup);
             return Json(result);
         }
         [HttpGet]
         public async Task<IActionResult> populateBranchListByParam(string operationType, int? companyId)
         {
-            var result = await _acrService.populateBranchByParam(operationType, (int?)FilterConditions.acBranch_ApplicationConfiguration, companyId);
+            var result = await _acrService.populateBranchByParam(operationType, (int?)FilterConditions.acBranch_ApplicationConfiguration_SolutionSetup, companyId);
             return Json(result);
         }
         #endregion

@@ -14,6 +14,10 @@ namespace SharedUI.Models.SQLParameters
         public int? OrganisationTypeId { get; set; }
         public int? CountryId { get; set; }
         public int? CityId { get; set; }
+        public int? LocationId { get; set; }
+        public int? DepartmentId { get; set; }
+        public int? SectionId { get; set; }
+        public int? CategoryId { get; set; }
         public string? Contact { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }

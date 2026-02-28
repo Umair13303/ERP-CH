@@ -17,9 +17,13 @@ public partial class ERPOrganisationSetupContext : DbContext
 
     public virtual DbSet<ACDepartment> ACDepartment { get; set; }
 
+    public virtual DbSet<ACSection> ACSection { get; set; }
+
     public virtual DbSet<ACUser> ACUser { get; set; }
 
     public virtual DbSet<AFChartOfAccount> AFChartOfAccount { get; set; }
+
+    public virtual DbSet<ICategory> ICategory { get; set; }
 
     public virtual DbSet<vAccountCatagory> vAccountCatagory { get; set; }
 
@@ -58,19 +62,19 @@ public partial class ERPOrganisationSetupContext : DbContext
 
         modelBuilder.Entity<ACDepartment>(entity =>
         {
-            entity.HasNoKey();
-
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ACSection>(entity =>
+        {
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<ACUser>(entity =>
         {
-            entity.HasNoKey();
-
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
@@ -80,6 +84,14 @@ public partial class ERPOrganisationSetupContext : DbContext
 
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ICategory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ICategor__3214EC07D6924099");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 

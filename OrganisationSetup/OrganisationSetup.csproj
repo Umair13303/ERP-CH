@@ -11,6 +11,8 @@
     <Folder Include="Areas\AccountNfinance\Models\" />
     <Folder Include="Areas\ApplicationConfiguration\Data\" />
     <Folder Include="Areas\ApplicationConfiguration\Models\" />
+    <Folder Include="Areas\Inventory\Data\" />
+    <Folder Include="Areas\Inventory\Models\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrganisationSetup.Models.DAL;
 using OrganisationSetup.Models.DAL.StoredProcedure;
+using SharedUI.Models.Enums;
 using SharedUI.Models.ViewModels;
 
 namespace OrganisationSetup.Services
 {
     public interface ICommon
     {
+        Task<int?[]?> getDocumentStatusByParam(string operationType);
         Task<List<vOrganisationType>> populateOrganisationTypeByParam();
         Task<List<vCountry>> populateCountryByParam();
         Task<List<vCity>> populateCityByParam(int? countryId);
@@ -14,6 +16,7 @@ namespace OrganisationSetup.Services
         Task<List<vAccountType>> populateAccountTypeByParam();
         Task<List<vAccountCatagory>> populateAccountCatagoryByParam(int? accountTypeId);
         Task<List<vFinancialStatement>> populateFinancialStatementByParam();
+
     }
     public class CommonServices : ICommon
     {
@@ -23,6 +26,16 @@ namespace OrganisationSetup.Services
         {
             _context = context;
 
+        }
+        public async Task<int?[]?> getDocumentStatusByParam(string operationType)
+        {
+            int?[]? documentStatusIds = operationType switch
+            {
+                nameof(OperationType.INSERT_DATA_INTO_DB) => [(int?)DocumentStatus.active],
+                nameof(OperationType.UPDATE_DATA_INTO_DB) => [(int?)DocumentStatus.active, (int?)DocumentStatus.inactive, (int?)DocumentStatus.deleted],
+                _ => null
+            };
+            return await Task.FromResult(documentStatusIds);
         }
         public async Task<List<vOrganisationType>> populateOrganisationTypeByParam()
         {

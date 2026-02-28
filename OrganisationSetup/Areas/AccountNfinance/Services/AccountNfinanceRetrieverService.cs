@@ -43,7 +43,7 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
             List<AFChartOfAccount> BranchRecord = new List<AFChartOfAccount>();
             switch (filterConditionId)
             {
-                case ((int?)FilterConditions.acBranch_ApplicationConfiguration):
+                case ((int?)FilterConditions.afChartOfAccount_Operation_ByCompanyId):
                     return await _eRPOSContext.AFChartOfAccount.AsNoTracking()
                         .Where(x =>
                         x.CompanyId == userInfo.CompanyId

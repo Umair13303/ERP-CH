@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <form id="ACDepartmentForm">
+    <form id="ACSectionForm">
         @Html.Hidden("OperationType", (string)ViewBag.OperationType)
         @Html.Hidden("GuID")
         @{
@@ -43,7 +43,7 @@
                         <div class="row mb-0">
                             <div class="col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    @Html.Label("DropDownListDocument", "Document (Department)", new { @class = "col-form-label" })
+                                    @Html.Label("DropDownListDocument", "Document (Section)", new { @class = "col-form-label" })
                                     @Html.DropDownList("DocumentGuID", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", @id = "DropDownListDocument" })
                                 </div>
                             </div>
@@ -57,30 +57,40 @@
             <div class="card-body">
                 <div class="col-12 mt-4">
                     <div class="bg-light rounded-2 border-start border-primary border-4 p-2">
-                        <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> DEPARTMENT INFORMATION</span>
+                        <span class="fw-bold text-primary small"><i class="fa-solid fa-building me-2"></i> SECTION INFORMATION</span>
                     </div>
                 </div>
 
                 <div class="row mb-0">
-                    <div class="col-sm-12 col-md-8">
+                    <div class="col-sm-12 col-md-3">
                         <div class="form-group">
                             @Html.Label("DropDownListLocation", "Location", new { @class = "col-form-label" })
-                            @Html.DropDownList("LocationId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", @id = "DropDownListLocation" })
+                            @Html.DropDownList("LocationId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", required = "required", @id = "DropDownListLocation" })
                         </div>
                     </div>
                 </div>
+
                 <div class="row mb-0">
-                    <div class="col-sm-12 col-md-8">
+                   
+                    <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             @Html.Label("TextBoxDescription", "Description", new { @class = "col-form-label" })
                             @Html.TextBox("Description", null, new { @class = "form-control form-control-sm", required = "required", placeholder = "Provide Description!", @id = "TextBoxDescription" })
                         </div>
                     </div>
+                    </div>
+                    <div class="row mb-0">
+
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            @Html.Label("DropDownListDepartment", "Department", new { @class = "col-form-label" })
+                            @Html.DropDownList("DepartmentId", Enumerable.Empty<SelectListItem>(), "Select an option", new { @class = "form-select form-select-sm select2", required = "required", @id = "DropDownListDepartment" })
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
-
     </form>
 </div>
-
-<script src="~/js/applicationconfiguration/createupdate_acdepartment_uiscript.js"></script>
+<script src="~/js/applicationconfiguration/CreateUpdate_ACSection_UIScript.js"></script>

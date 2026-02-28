@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OrganisationSetup.Areas.AccountNfinance.Services;
 using OrganisationSetup.Areas.ApplicationConfiguration.Services;
+using OrganisationSetup.Areas.Inventory.Services;
 using OrganisationSetup.Models.DAL;
 using OrganisationSetup.Models.DAL.StoredProcedure;
 using OrganisationSetup.Services;
@@ -62,6 +63,10 @@ builder.Services.AddScoped<IApplicationConfigurationRetriever, ApplicationConfig
 builder.Services.AddScoped<IAccountNfinanceUpsert, AccountNfinanceUpsertService>();
 builder.Services.AddScoped<IAccountNfinanceValidation, AccountNfinanceValidationService>();
 builder.Services.AddScoped<IAccountNfinanceRetriever, AccountNfinanceRetrieverService>();
+
+builder.Services.AddScoped<IInventoryUpsert, InventoryUpsertService>();
+builder.Services.AddScoped<IInventoryValidation, InventoryValidationService>();
+builder.Services.AddScoped<IInventoryRetriever, InventoryRetrieverService>();
 
 #endregion
 var app = builder.Build();

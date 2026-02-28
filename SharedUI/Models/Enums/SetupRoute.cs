@@ -6,6 +6,7 @@
         {
             ApplicationConfiguration=1,
             AccountNfinance=2,
+            Inventory = 3,
             AIMSCHConfiguration = 3,
         }
         public enum Controller
