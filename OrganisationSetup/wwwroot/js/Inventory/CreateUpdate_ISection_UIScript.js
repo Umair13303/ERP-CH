@@ -1,11 +1,11 @@
 ﻿/* ------ Global Variable ------ */
 var operationType = $("#OperationType").val();
-var dropDownListInitOption = "<option value='-1' " + (operationType == "INSERT_INTO_DB" ? "selected='selected'" : "") + ">Select an option</option>";
+var dropDownListInitOption = "<option value='-1'>Select an option</option>";
 
 /* ------ Depending DDL's ------ */
 function getDepartmentList() {
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/populateDepartmentListByParam",
+        url: window.basePath + "Inventory/ISectionManagement/populateDepartmentListByParam",
         type: "GET",
         dataType: "json",
         data: { operationType: operationType },
@@ -19,30 +19,6 @@ function getDepartmentList() {
             });
         },
         complete: function () {
-            
-        },
-        error: function (xhr, status, error) {
-            console.error("Error: " + error);
-        }
-    });
-}
-function getSectionList(departmentId,sectionId) {
-    $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/populateSectionListByParam",
-        type: "GET",
-        dataType: "json",
-        data: { operationType: operationType, departmentId: departmentId },
-        beforeSend: function () {
-
-        },
-        success: function (data) {
-            $("#DropDownListSection").empty().append(dropDownListInitOption);
-            $.each(data, function (index, item) {
-                var selectedOption = (item.id == sectionId);
-                $("#DropDownListSection").append(new Option(item.description, item.id, selectedOption, selectedOption));
-            });
-        },
-        complete: function () {
         },
         error: function (xhr, status, error) {
             console.error("Error: " + error);
@@ -52,11 +28,7 @@ function getSectionList(departmentId,sectionId) {
 
 /* ------ Change Cases DDL's ------ */
 function changeEventHandler() {
-    $("#DropDownListDepartment").on("change", function () {
-        var sectionId = -1;
-        var departmentId = $("#DropDownListDepartment :selected").val();
-        getSectionList(departmentId,sectionId);
-    });
+    getDepartmentList();
     $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
         if (validater()) {
             e.preventDefault();
@@ -78,7 +50,7 @@ function initialize() {
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ACCategoryForm");
+    var form = document.getElementById("ISectionForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -97,22 +69,17 @@ function validater() {
 function createUpdateDataIntoDB() {
     var operationType = $("#OperationType").val();
     var guID = $("#GuID").val();
-    var locationId = $("#DropDownListLocation :selected").val();
     var description = $("#TextBoxDescription").val();
     var departmentId = $("#DropDownListDepartment :selected").val();
-    var sectionId = $("#DropDownListSection :selected").val();
 
     var jsonData = {
         OperationType: operationType,
         GuID: guID ? guID : null,
-        LocationId: locationId,
         Description: description,
         DepartmentId: departmentId,
-        SectionId: sectionId,
-
     };
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACCategoryManagement/createUpdateCategory",
+        url: window.basePath + "Inventory/ISectionManagement/createUpdateSection",
         type: "POST",
         data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
@@ -123,7 +90,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#ACCategoryForm").removeClass('was-validated');
+                $("#ISectionForm").removeClass('was-validated');
             }
             else {
                 toastr.info(response.message);
@@ -147,3 +114,7 @@ $(function () {
     if (typeof setupGlobalAjax === "function") setupGlobalAjax();
     initialize();
 });
+
+function LoadDummyRecord() {
+    $("#DropDownListLocation").val(1).trigger("change");
+}

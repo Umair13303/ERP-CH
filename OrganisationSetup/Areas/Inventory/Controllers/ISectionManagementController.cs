@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrganisationSetup.Areas.ApplicationConfiguration.Services;
+using OrganisationSetup.Areas.CompanySetup.Services;
+using OrganisationSetup.Areas.Inventory.Services;
 using OrganisationSetup.Services;
 using SharedUI.Models.Configurations;
 using SharedUI.Models.Contexts;
@@ -8,25 +9,27 @@ using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
 using System.ComponentModel.Design;
 
-namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
+namespace OrganisationSetup.Areas.Inventory.Controllers
 {
     [Authorize]
-    [Area(nameof(SetupRoute.Area.ApplicationConfiguration))]
-    public class ACSectionManagementController : Controller
+    [Area(nameof(SetupRoute.Area.Inventory))]
+    public class ISectionManagementController : Controller
     {
-        private readonly IApplicationConfigurationUpsert _acuService;
-        private readonly IApplicationConfigurationRetriever _acrService;
+        private readonly IInventoryUpsert _IuService;
+        private readonly IInventoryRetriever _IrService;
+        private readonly ICompanySetupRetriever _CSrService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ACSectionManagementController(IApplicationConfigurationUpsert acuService, IApplicationConfigurationRetriever acrService, ICommon commonsServices, IHttpContextAccessor httpContextAccessor)
+        public ISectionManagementController(IInventoryUpsert acuService, IInventoryRetriever acrService, ICompanySetupRetriever csrService, ICommon commonsServices, IHttpContextAccessor httpContextAccessor)
         {
-            _acuService = acuService;
-            _acrService = acrService;
+            _IuService = acuService;
+            _IrService = acrService;
+            _CSrService = csrService;
             _httpContextAccessor = httpContextAccessor;
         }
 
         #region PORTION CONTAIN CODE TO: RENDER VIEW
-        public IActionResult CreateUpdate_ACSection_UI(UISetting ui)
+        public IActionResult CreateUpdate_ISection_UI(UISetting ui)
         {
             ViewBag.OperationType = ui.OperationType;
             ViewBag.DisplayName = ui.DisplayName;
@@ -38,7 +41,7 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
         [HttpGet]
         public async Task<IActionResult> populateDepartmentListByParam(string operationType)
         {
-            var result = await _acrService.populateDepartmentByParam(operationType, (int?)FilterConditions.acDepartment_Operation_ByCompany);
+            var result = await _CSrService.populateDepartmentByParam(operationType, (int?)FilterConditions.CSDepartment_Operation_ByCompany);
             return Json(result);
         }
         #endregion
@@ -54,8 +57,8 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
             }
             if (!ModelState.IsValid) return View(postedData);
 
-            var result = await _acuService.updateInsertDataInto_ACSection(postedData);
-            return Json(new { IsSuccess = result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
+            var result = await _IuService.updateInsertDataInto_ISection(postedData);
+            return Json(new { result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
         }
         #endregion
     }

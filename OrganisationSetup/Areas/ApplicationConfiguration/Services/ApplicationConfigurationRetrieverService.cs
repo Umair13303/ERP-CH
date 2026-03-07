@@ -14,10 +14,8 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
     {
         Task<List<ACCompany>> populateCompanyByParam(string operationType, int? filterConditionId);
         Task<List<ACBranch>> populateBranchByParam(string operationType, int? filterConditionId, int? companyId);
-        Task<List<ACDepartment>> populateDepartmentByParam(string operationType, int? filterConditionId);
-        Task<List<ACSection>> populateSectionByParam(string operationType, int? filterConditionId, int? departmentId);
-        Task<List<ACCategory>> populateCategoryByParam(string operationType, int? filterConditionId, int? sectionId);
-    }
+        Task<List<ACSaleUnit>> populateSaleUnitByParam(string operationType, int? filterConditionId);
+        }
     public class ApplicationConfigurationRetrieverService : IApplicationConfigurationRetriever
     {
         private readonly ERPOrganisationSetupContext _eRPOSContext;
@@ -97,90 +95,36 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                     return new List<ACBranch>();
             }
         }
-        public async Task<List<ACDepartment>> populateDepartmentByParam(string operationType, int? filterConditionId)
+        public async Task<List<ACSaleUnit>> populateSaleUnitByParam(string operationType, int? filterConditionId)
         {
             var userInfo = TempUser.Fill(_httpContextAccessor);
             if (!userInfo.IsAuthenticated)
             {
-                return new List<ACDepartment>();
+                return new List<ACSaleUnit>();
             }
 
             int?[]? documentStatusIds = await _commonsServices.getDocumentStatusByParam(operationType);
-            if (documentStatusIds == null) return new List<ACDepartment>();
+            if (documentStatusIds == null) return new List<ACSaleUnit>();
             switch (filterConditionId)
             {
-                case ((int?)FilterConditions.acDepartment_Operation_ByCompany):
-                    return await _eRPOSContext.ACDepartment.AsNoTracking()
+                case ((int?)FilterConditions.acSaleUnit_Operation_ByCompany):
+                    return await _eRPOSContext.ACSaleUnit.AsNoTracking()
                         .Where(x =>
                         x.CompanyId == userInfo.CompanyId
                         && x.Status == true
-                        && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new ACDepartment
+                        && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new ACSaleUnit
                         {
                             Id = x.Id,
                             GuID = x.GuID,
                             Description = x.Description
                         }).ToListAsync();
+      
                 default:
-                    return new List<ACDepartment>();
-            }
-        }
-        public async Task<List<ACSection>> populateSectionByParam(string operationType, int? filterConditionId, int? departmentId)
-        {
-            var userInfo = TempUser.Fill(_httpContextAccessor);
-            if (!userInfo.IsAuthenticated)
-            {
-                return new List<ACSection>();
-            }
-
-            int?[]? documentStatusIds = await _commonsServices.getDocumentStatusByParam(operationType);
-            if (documentStatusIds == null) return new List<ACSection>();
-            switch (filterConditionId)
-            {
-                case ((int?)FilterConditions.acSection_Operation_ByDepartment):
-                    return await _eRPOSContext.ACSection.AsNoTracking()
-                        .Where(x =>
-                        x.CompanyId == userInfo.CompanyId
-                        && x.DepartmentId == departmentId
-                        && x.Status == true
-                        && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new ACSection
-                        {
-                            Id = x.Id,
-                            GuID = x.GuID,
-                            Description = x.Description
-                        }).ToListAsync();
-                default:
-                    return new List<ACSection>();
-            }
-        }
-        public async Task<List<ACCategory>> populateCategoryByParam(string operationType, int? filterConditionId, int? sectionId)
-        {
-            var userInfo = TempUser.Fill(_httpContextAccessor);
-            if (!userInfo.IsAuthenticated)
-            {
-                return new List<ACCategory>();
-            }
-
-            int?[]? documentStatusIds = await _commonsServices.getDocumentStatusByParam(operationType);
-            if (documentStatusIds == null) return new List<ACCategory>();
-            switch (filterConditionId)
-            {
-                case ((int?)FilterConditions.ACCategory_Operation_BySection):
-                    return await _eRPOSContext.ACCategory.AsNoTracking()
-                        .Where(x =>
-                        x.CompanyId == userInfo.CompanyId
-                        && x.SectionId == sectionId
-                        && x.Status == true
-                        && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new ACCategory
-                        {
-                            Id = x.Id,
-                            GuID = x.GuID,
-                            Description = x.Description
-                        }).ToListAsync();
-                default:
-                    return new List<ACCategory>();
+                    return new List<ACSaleUnit>();
             }
         }
 
+      
     }
 
 }

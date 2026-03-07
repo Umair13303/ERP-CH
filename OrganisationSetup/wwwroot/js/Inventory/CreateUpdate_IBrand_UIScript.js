@@ -23,7 +23,7 @@ function initialize() {
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ACDepartmentForm");
+    var form = document.getElementById("IBrandForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -50,7 +50,7 @@ function createUpdateDataIntoDB() {
         Description: description,
     };
     $.ajax({
-        url: window.basePath + "ApplicationConfiguration/ACDepartmentManagement/createUpdateDepartment",
+        url: window.basePath + "Inventory/IBrandManagement/createUpdateBrand",
         type: "POST",
         data: JSON.stringify(jsonData),
         contentType: "application/json; charset=utf-8",
@@ -61,7 +61,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#ACDepartmentForm").removeClass('was-validated');
+                $("#IBrandForm").removeClass('was-validated');
             }
             else {
                 toastr.info(response.message);

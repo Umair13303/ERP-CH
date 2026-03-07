@@ -3,15 +3,13 @@ using System.Collections.Generic;
 
 namespace OrganisationSetup.Models.DAL;
 
-public partial class ACDepartment
+public partial class IBrand
 {
     public int Id { get; set; }
 
     public Guid? GuID { get; set; }
 
     public string? Code { get; set; }
-
-    public int? LocationId { get; set; }
 
     public string? Description { get; set; }
 

@@ -1,28 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrganisationSetup.Areas.ApplicationConfiguration.Services;
+using OrganisationSetup.Areas.CompanySetup.Services;
 using OrganisationSetup.Services;
 using SharedUI.Models.Configurations;
 using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
 
-namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
+namespace OrganisationSetup.Areas.CompanySetup.Controllers
 {
     [Authorize]
-    [Area(nameof(SetupRoute.Area.ApplicationConfiguration))]
-    public class ACDepartmentManagementController : Controller
+    [Area(nameof(SetupRoute.Area.CompanySetup))]
+    public class CSDepartmentManagementController : Controller
     {
-        private readonly IApplicationConfigurationUpsert _acuService;
-        private readonly IApplicationConfigurationRetriever _acrService;
+        private readonly ICompanySetupUpsert _acuService;
+        private readonly ICompanySetupRetriever _acrService;
 
-        public ACDepartmentManagementController(IApplicationConfigurationUpsert acCompanyService, IApplicationConfigurationRetriever acrService)
+        public CSDepartmentManagementController(ICompanySetupUpsert acCompanyService, ICompanySetupRetriever acrService)
         {
             _acuService = acCompanyService;
             _acrService = acrService;
 
         }
 
-        public IActionResult CreateUpdate_ACDepartment_UI(UISetting ui)
+        public IActionResult CreateUpdate_CSDepartment_UI(UISetting ui)
         {
             ViewBag.OperationType = ui.OperationType;
             ViewBag.DisplayName = ui.DisplayName;
@@ -40,8 +40,8 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
             }
             if (!ModelState.IsValid) return View(postedData);
 
-            var result = await _acuService.updateInsertDataInto_ACDepartment(postedData);
-            return Json(new { IsSuccess = result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
+            var result = await _acuService.updateInsertDataInto_CSDepartment(postedData);
+            return Json(new { result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
         }
         #endregion
     }

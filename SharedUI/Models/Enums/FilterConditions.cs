@@ -10,12 +10,15 @@ namespace SharedUI.Models.Enums
     {
         acCompany_ApplicationConfiguration_SolutionSetup=1,
         acBranch_ApplicationConfiguration_SolutionSetup = 2,
-
-        afChartOfAccount_Operation_ByCompanyId = 5,
-        acBranch_Operation_ByAllowedBranches = 4,
-        acDepartment_Operation_ByCompany = 6,
-        acSection_Operation_ByDepartment = 7,
-        ACCategory_Operation_BySection = 8,
+        acSaleUnit_ApplicationConfiguration_SolutionSetup = 3,
+        acSaleUnit_Operation_ByCompany = 4,
+        acBranch_Operation_ByAllowedBranches = 5,
+        afChartOfAccount_Operation_ByCompanyId = 6,
+        CSDepartment_Operation_ByCompany = 7,
+        ISection_Operation_ByDepartment = 8,
+        ICategory_Operation_BySection = 9,
+        ISubCategory_Operation_ByCategory = 10,
+        IBrand_Operation_ByCompany = 11,
 
 
 

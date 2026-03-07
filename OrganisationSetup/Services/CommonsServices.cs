@@ -16,6 +16,10 @@ namespace OrganisationSetup.Services
         Task<List<vAccountType>> populateAccountTypeByParam();
         Task<List<vAccountCatagory>> populateAccountCatagoryByParam(int? accountTypeId);
         Task<List<vFinancialStatement>> populateFinancialStatementByParam();
+        Task<List<vAttribute>> populateAttributeByParam();
+        Task<List<vItemType>> populateItemTypeByParam();
+        Task<List<vHSCode>> populateHSCodeByParam();
+        Task<List<vSaleTaxType>> populateSaleTaxTypeByParam();
 
     }
     public class CommonServices : ICommon
@@ -70,6 +74,26 @@ namespace OrganisationSetup.Services
         public async Task<List<vFinancialStatement>> populateFinancialStatementByParam()
         {
             var result = await _context.vFinancialStatement.AsNoTracking().ToListAsync();
+            return result;
+        }
+        public async Task<List<vAttribute>> populateAttributeByParam()
+        {
+            var result = await _context.vAttribute.AsNoTracking().ToListAsync();
+            return result;
+        }
+        public async Task<List<vItemType>> populateItemTypeByParam()
+        {
+            var result = await _context.vItemType.AsNoTracking().ToListAsync();
+            return result;
+        }
+        public async Task<List<vHSCode>> populateHSCodeByParam()
+        {
+            var result = await _context.vHSCode.AsNoTracking().ToListAsync();
+            return result;
+        }
+        public async Task<List<vSaleTaxType>> populateSaleTaxTypeByParam()
+        {
+            var result = await _context.vSaleTaxType.AsNoTracking().ToListAsync();
             return result;
         }
     }

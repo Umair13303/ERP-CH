@@ -5,9 +5,10 @@
         public enum Area
         {
             ApplicationConfiguration=1,
-            AccountNfinance=2,
-            Inventory = 3,
-            AIMSCHConfiguration = 3,
+            CompanySetup=2,
+            AccountNfinance = 3,
+            Inventory = 4,
+            AIMSCHConfiguration = 5,
         }
         public enum Controller
         {

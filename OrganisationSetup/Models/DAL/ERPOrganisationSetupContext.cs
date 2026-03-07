@@ -15,25 +15,39 @@ public partial class ERPOrganisationSetupContext : DbContext
 
     public virtual DbSet<ACCompany> ACCompany { get; set; }
 
-    public virtual DbSet<ACDepartment> ACDepartment { get; set; }
-
-    public virtual DbSet<ACSection> ACSection { get; set; }
+    public virtual DbSet<ACSaleUnit> ACSaleUnit { get; set; }
 
     public virtual DbSet<ACUser> ACUser { get; set; }
 
     public virtual DbSet<AFChartOfAccount> AFChartOfAccount { get; set; }
 
-    public virtual DbSet<ACCategory> ACCategory { get; set; }
+    public virtual DbSet<CSDepartment> CSDepartment { get; set; }
+
+    public virtual DbSet<DCSChartOfAccount> DCSChartOfAccount { get; set; }
+
+    public virtual DbSet<IBrand> IBrand { get; set; }
+
+    public virtual DbSet<ICategory> ICategory { get; set; }
+
+    public virtual DbSet<ISection> ISection { get; set; }
+
+    public virtual DbSet<ISubCategory> ISubCategory { get; set; }
 
     public virtual DbSet<vAccountCatagory> vAccountCatagory { get; set; }
 
     public virtual DbSet<vAccountType> vAccountType { get; set; }
+
+    public virtual DbSet<vAttribute> vAttribute { get; set; }
 
     public virtual DbSet<vCity> vCity { get; set; }
 
     public virtual DbSet<vCountry> vCountry { get; set; }
 
     public virtual DbSet<vFinancialStatement> vFinancialStatement { get; set; }
+
+    public virtual DbSet<vHSCode> vHSCode { get; set; }
+
+    public virtual DbSet<vItemType> vItemType { get; set; }
 
     public virtual DbSet<vOrganisationType> vOrganisationType { get; set; }
 
@@ -42,6 +56,10 @@ public partial class ERPOrganisationSetupContext : DbContext
     public virtual DbSet<vRight> vRight { get; set; }
 
     public virtual DbSet<vRole> vRole { get; set; }
+
+    public virtual DbSet<vSaleTaxType> vSaleTaxType { get; set; }
+
+    public virtual DbSet<vUnit> vUnit { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,15 +78,18 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<ACDepartment>(entity =>
+        modelBuilder.Entity<ACSaleUnit>(entity =>
         {
-            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
-        });
+            entity.HasKey(e => e.Id).HasName("PK__ACSaleUn__3214EC0763996922");
 
-        modelBuilder.Entity<ACSection>(entity =>
-        {
-            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.CreatedBy).HasDefaultValue(1);
+            entity.Property(e => e.CreatedOn)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.GuID).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.PackingQuantity)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
@@ -87,9 +108,47 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<ACCategory>(entity =>
+        modelBuilder.Entity<CSDepartment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ACDepartment");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<DCSChartOfAccount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__DSChartO__3214EC07090CCCDF");
+        });
+
+        modelBuilder.Entity<IBrand>(entity =>
+        {
+            entity.HasNoKey();
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ICategory>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__ICategor__3214EC07D6924099");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ISection>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ACSection");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ISubCategory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ISubCate__3214EC0703940CCF");
 
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
@@ -109,6 +168,15 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity
                 .HasNoKey()
                 .ToView("vAccountType");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<vAttribute>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vAttribute");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
@@ -134,6 +202,24 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity
                 .HasNoKey()
                 .ToView("vFinancialStatement");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<vHSCode>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vHSCode");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<vItemType>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vItemType");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
@@ -170,6 +256,26 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity
                 .HasNoKey()
                 .ToView("vRole");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<vSaleTaxType>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vSaleTaxType");
+
+            entity.Property(e => e.AdditionalRate).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.DefaultRate).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<vUnit>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vUnit");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OrganisationSetup.Models.DAL;
 
-public partial class ACSection
+public partial class CSDepartment
 {
     public int Id { get; set; }
 
@@ -11,11 +11,7 @@ public partial class ACSection
 
     public string? Code { get; set; }
 
-    public int? LocationId { get; set; }
-
     public string? Description { get; set; }
-
-    public int? DepartmentId { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 

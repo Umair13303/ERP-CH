@@ -27,11 +27,12 @@ namespace SharedUI.Models.Enums
         accountClassFeeStructure = 16,
         accountClassFeeStructureFeeType = 17,
         student = 18,
-        cDepartment=19,
-        cSection=20,
-        cCategory = 21,
-        cSubCategory = 22,
-        cType = 22,
+        department=19,
+        section=20,
+        category = 21,
+        subCategory = 22,
+        brand = 23,
+        supplier = 24,
 
     }
 }

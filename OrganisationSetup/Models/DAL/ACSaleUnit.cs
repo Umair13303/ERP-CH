@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OrganisationSetup.Models.DAL;
 
-public partial class AFChartOfAccount
+public partial class ACSaleUnit
 {
     public int Id { get; set; }
 
@@ -13,9 +13,9 @@ public partial class AFChartOfAccount
 
     public string? Description { get; set; }
 
-    public int? AccountCategoryId { get; set; }
+    public decimal? PackingQuantity { get; set; }
 
-    public int? FinancialStatementId { get; set; }
+    public int? UnitId { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 

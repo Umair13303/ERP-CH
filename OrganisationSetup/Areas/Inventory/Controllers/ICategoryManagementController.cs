@@ -1,35 +1,38 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrganisationSetup.Areas.AccountNfinance.Services;
-using OrganisationSetup.Areas.ApplicationConfiguration.Services;
+using OrganisationSetup.Areas.CompanySetup.Services;
+using OrganisationSetup.Areas.Inventory.Services;
 using OrganisationSetup.Services;
 using SharedUI.Models.Configurations;
 using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
 
-namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
+namespace OrganisationSetup.Areas.Inventory.Controllers
 {
     [Authorize]
-    [Area(nameof(SetupRoute.Area.ApplicationConfiguration))]
-    public class ACCategoryManagementController : Controller
+    [Area(nameof(SetupRoute.Area.Inventory))]
+    public class ICategoryManagementController : Controller
     {
-        private readonly IApplicationConfigurationRetriever _acrService;
-        private readonly IApplicationConfigurationUpsert _acuService;
+        private readonly IInventoryRetriever _IrService;
+        private readonly ICompanySetupRetriever _CSrService;
+        private readonly IInventoryUpsert _IuService;
 
-        public ACCategoryManagementController(IApplicationConfigurationRetriever acrService, IApplicationConfigurationUpsert acuService)
+        public ICategoryManagementController(IInventoryRetriever irService, ICompanySetupRetriever csrService, IInventoryUpsert iuService)
         {
-            _acrService = acrService;
-            _acuService = acuService;
+            _IrService = irService;
+            _IuService = iuService;
+            _CSrService = csrService;
         }
 
         #region PORTION CONTAIN CODE TO: RENDER VIEW
-        public IActionResult CreateUpdate_ACCategory_UI(UISetting ui)
+        public IActionResult CreateUpdate_ICategory_UI(UISetting ui)
         {
             ViewBag.OperationType = ui.OperationType;
             ViewBag.DisplayName = ui.DisplayName;
             return View();
         }
-        public IActionResult CreateUpdate_ACSubCategory_UI(UISetting ui)
+        public IActionResult CreateUpdate_ISubCategory_UI(UISetting ui)
         {
             ViewBag.OperationType = ui.OperationType;
             ViewBag.DisplayName = ui.DisplayName;
@@ -40,19 +43,19 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
         [HttpGet]
         public async Task<IActionResult> populateDepartmentListByParam(string operationType)
         {
-            var result = await _acrService.populateDepartmentByParam(operationType, (int?)FilterConditions.acDepartment_Operation_ByCompany);
+            var result = await _CSrService.populateDepartmentByParam(operationType, (int?)FilterConditions.CSDepartment_Operation_ByCompany);
             return Json(result);
         }
         [HttpGet]
         public async Task<IActionResult> populateSectionListByParam(string operationType, int? departmentId)
         {
-            var result = await _acrService.populateSectionByParam(operationType, (int?)FilterConditions.acSection_Operation_ByDepartment, departmentId);
+            var result = await _IrService.populateSectionByParam(operationType, (int?)FilterConditions.ISection_Operation_ByDepartment, departmentId);
             return Json(result);
         }
         [HttpGet]
         public async Task<IActionResult> populateCategoryListByParam(string operationType, int? sectionId)
         {
-            var result = await _acrService.populateCategoryByParam(operationType, (int?)FilterConditions.ACCategory_Operation_BySection, sectionId);
+            var result = await _IrService.populateCategoryByParam(operationType, (int?)FilterConditions.ICategory_Operation_BySection, sectionId);
             return Json(result);
         }
         #endregion
@@ -66,8 +69,8 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
             }
             if (!ModelState.IsValid) return View(postedData);
 
-            var result = await _acuService.updateInsertDataInto_ACCategory(postedData);
-            return Json(new { IsSuccess = result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
+            var result = await _IuService.updateInsertDataInto_ICategory(postedData);
+            return Json(new { result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
         }
         [HttpPost]
         public async Task<IActionResult> createUpdateSubCategory([FromBody] PostedData postedData)
@@ -78,8 +81,8 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Controllers
             }
             if (!ModelState.IsValid) return View(postedData);
 
-            var result = await _acuService.updateInsertDataInto_ACSubCategory(postedData);
-            return Json(new { IsSuccess = result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
+            var result = await _IuService.updateInsertDataInto_ISubCategory(postedData);
+            return Json(new { result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
         }
         #endregion
     }
