@@ -1,4 +1,3 @@
-using IMSClothHouse.Models.DAL;
 using IMSClothHouse.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +8,6 @@ using SharedUI.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ERPClothHouseContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ERPClothHouseConnection")));
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!);
