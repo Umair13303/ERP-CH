@@ -72,13 +72,13 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    transaction.Commit();
+                    await transaction.CommitAsync();
 
                     return ServiceResult.success(Message.serverResponse(result), result.Value);
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     return ServiceResult.failure(Message.serverResponse((int?)Code.InternalServerError), (int)Code.InternalServerError);
                 }
             }
@@ -128,13 +128,13 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    transaction.Commit();
+                    await transaction.CommitAsync();
 
                     return ServiceResult.success(Message.serverResponse(result), result.Value);
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     return ServiceResult.failure(Message.serverResponse((int?)Code.InternalServerError), (int)Code.InternalServerError);
                 }
             }
@@ -183,13 +183,13 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    transaction.Commit();
+                    await transaction.CommitAsync();
 
                     return ServiceResult.success(Message.serverResponse(result), result.Value);
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     return ServiceResult.failure(Message.serverResponse((int?)Code.InternalServerError), (int)Code.InternalServerError);
                 }
             }

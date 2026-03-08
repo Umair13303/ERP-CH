@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace OrganisationSetup.Models.DAL;
+namespace GateWay.Models.DAL;
 
 public partial class ERPOrganisationSetupContext : DbContext
 {

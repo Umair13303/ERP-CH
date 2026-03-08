@@ -16,7 +16,7 @@ function getAttributeList() {
         success: function (data) {
             $("#DropDownListAttribute").empty().append(dropDownListInitOption);
             $.each(data, function (index, item) {
-                $("#DropDownListAttribute").append(new Option(item.description, item.id));
+                $("#DropDownListAttribute").append(new Option(item.description, item.id,true,true));
             });
         },
         complete: function () {
@@ -142,6 +142,98 @@ function getSubCategoryList(categoryId,subCategoryId) {
         }
     });
 }
+function getSaleUnitList() {
+    $.ajax({
+        url: window.basePath + "Inventory/IProductManagement/populateSaleUnitListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListSaleUnit").empty().append(dropDownListInitOption);
+            $.each(data, function (index, item) {
+                $("#DropDownListSaleUnit").append(new Option(item.description, item.id));
+            });
+        },
+        complete: function () {
+
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+function getInventoryAccountList() {
+    $.ajax({
+        url: window.basePath + "Inventory/IProductManagement/populateInventoryAccountListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListInventoryAccount").empty();
+            $.each(data, function (index, item) {
+                $("#DropDownListInventoryAccount").append(new Option(item.description, item.id));
+            });
+        },
+        complete: function () {
+
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+function getSaleRevenueAccountList() {
+    $.ajax({
+        url: window.basePath + "Inventory/IProductManagement/populateSaleRevenueAccountListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListSaleRevenueAccount").empty();
+            $.each(data, function (index, item) {
+                $("#DropDownListSaleRevenueAccount").append(new Option(item.description, item.id));
+            });
+        },
+        complete: function () {
+
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+function getCostOfSaleAccountList() {
+    $.ajax({
+        url: window.basePath + "Inventory/IProductManagement/populateCostOfSaleAccountListByParam",
+        type: "GET",
+        dataType: "json",
+        data: { operationType: operationType },
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            $("#DropDownListCostOfSaleAccount").empty();
+            $.each(data, function (index, item) {
+                $("#DropDownListCostOfSaleAccount").append(new Option(item.description, item.id));
+            });
+        },
+        complete: function () {
+
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
 function getItemTypeList() {
     $.ajax({
         url: window.basePath + "Inventory/IProductManagement/populateItemTypeListByParam",
@@ -226,12 +318,12 @@ function changeEventHandler() {
         var categoryId = $("#DropDownListCategory :selected").val();
         getSubCategoryList(categoryId, subCategoryId);
     });
-    //$("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
-    //    if (validater()) {
-    //        e.preventDefault();
-    //        createUpdateDataIntoDB();
-    //    }
-    //});
+    $("#ButtonSaveData, #ButtonUpdateData").on("click", function (e) {
+        if (validater()) {
+            e.preventDefault();
+            createUpdateDataIntoDB();
+        }
+    });
 }
 
 /* ------ Call Initial Components ------ */
@@ -239,6 +331,10 @@ function initialize() {
     getAttributeList();
     getBrandList();
     getDepartmentList();
+    getSaleUnitList();
+    getInventoryAccountList();
+    getSaleRevenueAccountList();
+    getCostOfSaleAccountList();
     getItemTypeList();
     getHSCodeList();
     getSaleTaxTypeList();
@@ -252,7 +348,7 @@ function initialize() {
 }
 /* ------ Validation for user input ------ */
 function validater() {
-    var form = document.getElementById("ISubProductForm");
+    var form = document.getElementById("IProductForm");
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
 
@@ -272,19 +368,51 @@ function createUpdateDataIntoDB() {
     var operationType = $("#OperationType").val();
     var guID = $("#GuID").val();
     var description = $("#TextBoxDescription").val();
+    var machineNumber = $("#TextBoxMachineNumber").val();
+    var sku = $("#TextBoxSKU").val();
+    var additionalDetail = $("#TextBoxAdditionalDetail").val();
+    var attributeIds = $("#DropDownListAttribute").val();
+    var brandId = $("#DropDownListBrand :selected").val();
+    var isFavorite = $("#CheckBoxIsFavorite").prop("checked");
+    var isSaleTaxExclusive = $("#CheckBoxIsSaleTaxExclusive").prop("checked");
     var departmentId = $("#DropDownListDepartment :selected").val();
     var sectionId = $("#DropDownListSection :selected").val();
-    var ProductId = $("#DropDownListProduct :selected").val();
+    var categoryId = $("#DropDownListCategory :selected").val();
+    var subCategoryId = $("#DropDownListSubCategory :selected").val();
+    var criticalLimit = $("#TextBoxCriticalLimit").val();
+    var saleUnitId = $("#DropDownListSaleUnit :selected").val();
+    var inventoryAccountId = $("#DropDownListInventoryAccount :selected").val();
+    var saleRevenueAccountId = $("#DropDownListSaleRevenueAccount :selected").val();
+    var costOfSaleAccountId = $("#DropDownListCostOfSaleAccount :selected").val();
+    var itemTypeId = $("#DropDownListItemType :selected").val();
+    var hsCodeId = $("#DropDownListHSCode :selected").val();
+    var saleTaxTypeId = $("#DropDownListSaleTaxType :selected").val();
 
     var jsonData = {
         OperationType: operationType,
         GuID: guID ? guID : null,
         Description: description,
+        MachineNumber: machineNumber,
+        SKU: sku,
+        AdditionalDetail: additionalDetail,
+        AttributeIds: attributeIds.toString(),
+        BrandId: brandId,
+        IsFavorite: isFavorite,
+        IsSaleTaxExclusive: isSaleTaxExclusive,
         DepartmentId: departmentId,
         SectionId: sectionId,
-        ProductId: ProductId,
+        CategoryId: categoryId,
+        SubCategoryId: subCategoryId,
+        CriticalLimit: criticalLimit ? criticalLimit : 0,
+        SaleUnitId: saleUnitId,
+        InventoryAccountId: inventoryAccountId,
+        SaleRevenueAccountId: saleRevenueAccountId,
+        CostOfSaleAccountId: costOfSaleAccountId,
+        ItemTypeId: itemTypeId,
+        HSCodeId: hsCodeId,
+        SaleTaxTypeId: saleTaxTypeId
 
-    };
+    }
     $.ajax({
         url: window.basePath + "Inventory/IProductManagement/createUpdateProduct",
         type: "POST",
@@ -297,7 +425,7 @@ function createUpdateDataIntoDB() {
         success: function (response) {
             if (response.IsSuccess == true) {
                 toastr.success(response.message);
-                $("#IProductForm").removeClass('was-validated');
+                $("#IProductForm").removeClass("was-validated");
             }
             else {
                 toastr.info(response.message);
@@ -313,8 +441,8 @@ function createUpdateDataIntoDB() {
     });
 }
 function clearInputFields() {
-    $(".form-control").val('');
-    $(".select2").val('-1').trigger("change");
+    $(".form-control").not("#DropDownListAttribute,#DropDownListInventoryAccount,#DropDownListSaleRevenueAccount,#DropDownListCostOfSaleAccount,#DropDownListItemType,#DropDownListHSCode,#DropDownListSaleTaxType").val("");
+    $(".select2").not("#DropDownListAttribute,#DropDownListInventoryAccount,#DropDownListSaleRevenueAccount,#DropDownListCostOfSaleAccount,#DropDownListItemType,#DropDownListHSCode,#DropDownListSaleTaxType").val("-1").trigger("change");
 
 }
 $(function () {

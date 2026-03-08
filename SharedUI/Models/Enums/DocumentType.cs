@@ -33,6 +33,9 @@ namespace SharedUI.Models.Enums
         subCategory = 22,
         brand = 23,
         supplier = 24,
+        saleUnit = 25,
+        product = 26,
+        productATI = 27,
 
     }
 }

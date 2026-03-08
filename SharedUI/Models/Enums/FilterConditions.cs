@@ -19,6 +19,9 @@ namespace SharedUI.Models.Enums
         ICategory_Operation_BySection = 9,
         ISubCategory_Operation_ByCategory = 10,
         IBrand_Operation_ByCompany = 11,
+        afChartOfAccount_Operation_ByDefaultSetting = 12,
+        ISubCategory_Operation_GroupByCategory=13
+
 
 
 

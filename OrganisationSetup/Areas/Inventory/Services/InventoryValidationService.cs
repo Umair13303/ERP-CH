@@ -10,8 +10,7 @@ namespace OrganisationSetup.Areas.Inventory.Services
         Task<bool> isICategoryValid(string? operationType, Guid? guID, int? sectionId, string? description);
         Task<bool> isISubCategoryValid(string? operationType, Guid? guID, int? categoryId, string? description);
         Task<bool> isIBrandValid(string? operationType, Guid? guID, string? description);
-
-
+        Task<bool> isIProductValid(string? operationType, Guid? guID, string? description, string? machineNumber, string? sku);
     }
 
     public class InventoryValidationService : IInventoryValidation
@@ -82,6 +81,22 @@ namespace OrganisationSetup.Areas.Inventory.Services
 
                 case nameof(OperationType.UPDATE_DATA_INTO_DB):
                     bool exists = await _eRPOSContext.IBrand.AnyAsync(x => x.GuID == guID);
+                    return exists;
+                default:
+                    return false;
+            }
+        }
+        public async Task<bool> isIProductValid(string? operationType, Guid? guID, string? description, string? machineNumber, string? sku)
+        {
+            if (string.IsNullOrEmpty(operationType)) return false;
+            switch (operationType)
+            {
+                case nameof(OperationType.INSERT_DATA_INTO_DB):
+                    return !await _eRPOSContext.IProduct
+                        .AnyAsync(x => x.Description!.Trim().ToLower() == description!.Trim().ToLower() && x.MachineNumber!.Trim().ToLower() == machineNumber!.Trim().ToLower() && x.SKU!.Trim().ToLower() == sku!.Trim().ToLower());
+
+                case nameof(OperationType.UPDATE_DATA_INTO_DB):
+                    bool exists = await _eRPOSContext.IProduct.AnyAsync(x => x.GuID == guID);
                     return exists;
                 default:
                     return false;

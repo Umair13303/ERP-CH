@@ -7,6 +7,7 @@ using SharedUI.Models.Enums;
 using SharedUI.Models.ViewModels;
 using System;
 using System.Linq;
+using static SharedUI.Models.ViewModels.DTObject;
 
 namespace OrganisationSetup.Areas.Inventory.Services
 {
@@ -141,6 +142,28 @@ namespace OrganisationSetup.Areas.Inventory.Services
                 default:
                     return new List<IBrand>();
             }
+        }
+        public async Task<List<DTObject.SubCategory_List>> populateSubCategoryByParam()
+        {
+            var userInfo = TempUser.Fill(_httpContextAccessor);
+
+            if (!userInfo.IsAuthenticated)
+            {
+                return new List<SubCategory_List>();
+            }
+            var result = await (
+                from sc in _eRPOSContext.ISubCategory
+                join c in _eRPOSContext.ICategory on sc.CategoryId equals c.Id
+                where (sc.Status == true && c.Status == true )
+                select new DTObject.SubCategory_List
+                {
+                    Category = c.Description,
+                    SubCategoryId = sc.Id,
+                    SubCategory = sc.Description
+                }
+            ).ToListAsync();
+
+            return result;
         }
     }
 

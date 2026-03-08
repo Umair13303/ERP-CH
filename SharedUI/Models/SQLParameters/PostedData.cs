@@ -18,6 +18,7 @@ namespace SharedUI.Models.SQLParameters
         public int? DepartmentId { get; set; }
         public int? SectionId { get; set; }
         public int? CategoryId { get; set; }
+        public int? SubCategoryId { get; set; }
         public string? Contact { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }
@@ -25,17 +26,33 @@ namespace SharedUI.Models.SQLParameters
         public string? Logo { get; set; }
         public string? NTNNumber { get; set; }
         public string? Password { get; set; }
+        public string? MachineNumber { get; set; }
+        public string? SKU { get; set; }
         public string? AllowedBranchIds { get; set; }
+        public string? AdditionalDetail { get; set; }
+        public string? AttributeIds { get; set; }
+        public decimal? CriticalLimit { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public int? DocType { get; set; }
         public int? DocumentStatus { get; set; }
+        public bool? IsFavorite { get; set; }
+        public bool? IsSaleTaxExclusive { get; set; }
         public bool? Status { get; set; }
         public int? BranchId { get; set; }
+        public int? BrandId { get; set; }
         public int? CompanyId { get; set; }
         public int? EmployeeId { get; set; }
         public int? RoleId { get; set; }
+        public int? ProductId { get; set; }
+        public int? InventoryAccountId { get; set; }
+        public int? SaleRevenueAccountId { get; set; }
+        public int? CostOfSaleAccountId { get; set; }
+        public int? SaleUnitId { get; set; }
+        public int? ItemTypeId { get; set; }
+        public int? HSCodeId { get; set; }
+        public int? SaleTaxTypeId { get; set; }
     }
 }
