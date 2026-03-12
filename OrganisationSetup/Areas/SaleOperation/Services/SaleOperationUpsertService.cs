@@ -7,76 +7,94 @@ using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
 using System.Diagnostics;
 using SharedUI.Models.Responses;
+using OrganisationSetup.Areas.AccountNfinance.Services;
 
 
-namespace OrganisationSetup.Areas.AccountNfinance.Services
+namespace OrganisationSetup.Areas.SaleOperation.Services
 {
-    public interface IAccountNfinanceUpsert
+    public interface ISaleOperationUpsert
     {
-        Task<ServiceResult> updateInsertDataInto_AFChartOfAccount(PostedData postedData);
-
-
+        Task<ServiceResult> updateInsertDataInto_SOCustomer(PostedData postedData);
 
     }
-    public class AccountNfinanceUpsertService: IAccountNfinanceUpsert
+    public class SaleOperationUpsertService : ISaleOperationUpsert
     {
         private readonly IOSDataLayer _repo;
         private readonly string _connectionString;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAccountNfinanceValidation _validationService;
-        private readonly IAccountNfinanceRetriever _retrieverService;
-        public AccountNfinanceUpsertService(IOSDataLayer repo, ERPOrganisationSetupContext context, IHttpContextAccessor httpContextAccessor , IAccountNfinanceValidation validationService, IAccountNfinanceRetriever retrieverService)
+        private readonly ISaleOperationValidation _validationService;
+        private readonly IAccountNfinanceUpsert _anfUService;
+        private readonly ERPOrganisationSetupContext _eRPOSContext;
+        public SaleOperationUpsertService(IOSDataLayer repo, ERPOrganisationSetupContext context, IHttpContextAccessor httpContextAccessor ,ISaleOperationValidation validationService, ERPOrganisationSetupContext eRPOSC, IAccountNfinanceUpsert anfUService)
         {
             _repo = repo;
             _connectionString = context.Database.GetDbConnection().ConnectionString;
             _httpContextAccessor = httpContextAccessor;
             _validationService = validationService;
-            _retrieverService = retrieverService;
+            _anfUService = anfUService;
+            _eRPOSContext = eRPOSC;
         }
-        public async Task<ServiceResult> updateInsertDataInto_AFChartOfAccount(PostedData postedData)
+
+        public async Task<ServiceResult> updateInsertDataInto_SOCustomer(PostedData postedData)
         {
             var userInfo = TempUser.Fill(_httpContextAccessor);
 
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
-            if(postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
+            if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
                 postedData.GuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isAFChartOfAccountValid(postedData.OperationType,postedData.GuID,postedData.Description);
+            bool? isOperationPermitted = await _validationService.isOSCustomerValid(postedData.OperationType, postedData.GuID, postedData.Description);
 
-            if(isOperationPermitted == true)
+            if (isOperationPermitted == true)
             {
                 using var con = new SqlConnection(_connectionString);
                 await con.OpenAsync();
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ACCompany(
+                    #region PRESERVE DATA & GENERATE DEFAULT CUSTOMER ACCOUNTS
+                    string? customerName = postedData.Description;
+                    string accountReceivableDescription = customerName + "--" + "Account Receivable" + Guid.NewGuid().ToString("N").Substring(0, 8);
+                    int? accountTypeId = 1;
+                    int? accountCatagoryId = 20;
+
+                    postedData.Description = accountReceivableDescription;
+                    postedData.AccountTypeId = accountTypeId;
+                    postedData.AccountCategoryId = accountCatagoryId;
+
+                    var accountReceivableGeneration = await _anfUService.updateInsertDataInto_AFChartOfAccount(postedData);
+
+                    postedData.ReceivableAccountId = accountReceivableGeneration.DocumentNumber;
+                    postedData.Description = customerName;
+
+                    #endregion
+
+
+                    var result = await _repo.UpsertInto_SOCustomer(
                                                             postedData.OperationType,
                                                             postedData.GuID,
                                                             postedData.Description!.Trim(),
-                                                            postedData.CountryId,
-                                                            postedData.CityId,
                                                             postedData.Contact!.Trim(),
                                                             postedData.Email!.Trim(),
+                                                            postedData.CNICNumber!.Trim(),
                                                             postedData.Address!.Trim(),
-                                                            postedData.Website!.Trim(),
-                                                            null,
+                                                            postedData.AdditionalDetail!.Trim(),
+                                                            postedData.ReceivableAccountId,
                                                             DateTime.Now,
                                                             userInfo.UserId,
                                                             DateTime.Now,
                                                             userInfo.UserId,
-                                                            (int?)DocumentType.accountChartOfAccount,
+                                                            (int?)DocumentType.section,
                                                             (int?)DocumentStatus.active,
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
                     await transaction.CommitAsync();
 
-                    var accountInfoByGuID= await _retrieverService.PopulateChartOfAccountInfo(postedData.GuID);
-                    return ServiceResult.internalSuccess(Message.serverResponse(result), result.Value, accountInfoByGuID.Id);
+                    return ServiceResult.success(Message.serverResponse(result), result.Value);
                 }
                 catch (Exception ex)
                 {
@@ -90,5 +108,6 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
             }
 
         }
+
     }
 }

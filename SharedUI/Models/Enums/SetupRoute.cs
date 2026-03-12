@@ -9,6 +9,7 @@
             AccountNfinance = 3,
             Inventory = 4,
             AIMSCHConfiguration = 5,
+            SaleOperation = 6,
         }
         public enum Controller
         {

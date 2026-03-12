@@ -25,7 +25,9 @@ namespace OrganisationSetup.Services
             var rightList = await _context.vRight.AsNoTracking().ToListAsync();
             return rightList
                 .Where(r => !string.IsNullOrEmpty(r.RoleIds) &&
-                            r.RoleIds.Split(',').Contains(userInfo.RoleId))
+                            r.RoleIds.Split(',').Contains(userInfo.RoleId) &&
+                            r.Status == true && r.IsDisplayAllowed == true
+                            )
                 .GroupBy(r => r.Menu)
                 .Select(menuGroup => new VMMenu
                 {

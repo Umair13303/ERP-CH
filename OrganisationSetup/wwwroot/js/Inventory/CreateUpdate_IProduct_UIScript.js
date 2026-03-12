@@ -5,9 +5,9 @@ var dropDownListInitOption = "<option value='-1' " + (operationType == "INSERT_I
 /* ------ Depending DDL's ------ */
 
 
-function getAttributeList() {
+function getvAttributeList() {
     $.ajax({
-        url: window.basePath + "Inventory/IProductManagement/populateAttributeListByParam",
+        url: window.basePath + "Inventory/IProductManagement/populatevAttributeListByParam",
         type: "GET",
         dataType: "json",
         beforeSend: function () {
@@ -234,9 +234,9 @@ function getCostOfSaleAccountList() {
         }
     });
 }
-function getItemTypeList() {
+function getvItemTypeList() {
     $.ajax({
-        url: window.basePath + "Inventory/IProductManagement/populateItemTypeListByParam",
+        url: window.basePath + "Inventory/IProductManagement/populatevItemTypeListByParam",
         type: "GET",
         dataType: "json",
         beforeSend: function () {
@@ -256,9 +256,9 @@ function getItemTypeList() {
         }
     });
 }
-function getHSCodeList() {
+function getvHSCodeList() {
     $.ajax({
-        url: window.basePath + "Inventory/IProductManagement/populateHSCodeListByParam",
+        url: window.basePath + "Inventory/IProductManagement/populatevHSCodeListByParam",
         type: "GET",
         dataType: "json",
         beforeSend: function () {
@@ -278,9 +278,9 @@ function getHSCodeList() {
         }
     });
 }
-function getSaleTaxTypeList() {
+function getvSaleTaxTypeList() {
     $.ajax({
-        url: window.basePath + "Inventory/IProductManagement/populateSaleTaxTypeListByParam",
+        url: window.basePath + "Inventory/IProductManagement/populatevSaleTaxTypeListByParam",
         type: "GET",
         dataType: "json",
         beforeSend: function () {
@@ -328,16 +328,16 @@ function changeEventHandler() {
 
 /* ------ Call Initial Components ------ */
 function initialize() {
-    getAttributeList();
+    getvAttributeList();
     getBrandList();
     getDepartmentList();
     getSaleUnitList();
     getInventoryAccountList();
     getSaleRevenueAccountList();
     getCostOfSaleAccountList();
-    getItemTypeList();
-    getHSCodeList();
-    getSaleTaxTypeList();
+    getvItemTypeList();
+    getvHSCodeList();
+    getvSaleTaxTypeList();
     const intputMasking = new UIMasking();
     intputMasking.initialize();
     $('.select2').select2({

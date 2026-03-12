@@ -43,7 +43,7 @@ namespace OrganisationSetup.Areas.Inventory.Controllers
 
         #region PORTION CONTAIN CODE TO: RETURN DEPENDING DDL
         [HttpGet]
-        public async Task<IActionResult> populateAttributeListByParam()
+        public async Task<IActionResult> populatevAttributeListByParam()
         {
             var result = await _IcService.populateAttributeByParam();
             return Json(result);
@@ -103,19 +103,19 @@ namespace OrganisationSetup.Areas.Inventory.Controllers
             return Json(result);
         }
         [HttpGet]
-        public async Task<IActionResult> populateItemTypeListByParam()
+        public async Task<IActionResult> populatevItemTypeListByParam()
         {
             var result = await _IcService.populateItemTypeByParam();
             return Json(result);
         }
         [HttpGet]
-        public async Task<IActionResult> populateHSCodeListByParam()
+        public async Task<IActionResult> populatevHSCodeListByParam()
         {
             var result = await _IcService.populateHSCodeByParam();
             return Json(result);
         }
         [HttpGet]
-        public async Task<IActionResult> populateSaleTaxTypeListByParam()
+        public async Task<IActionResult> populatevSaleTaxTypeListByParam()
         {
             var result = await _IcService.populateSaleTaxTypeByParam();
             return Json(result);

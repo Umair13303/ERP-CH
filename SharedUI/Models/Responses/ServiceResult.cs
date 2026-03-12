@@ -10,9 +10,11 @@ namespace SharedUI.Models.Responses
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; } = string.Empty;
-        public int? Data { get; set; }
+        public int? DocumentNumber { get; set; }
         public int StatusCode { get; set; }
 
+        public static ServiceResult internalSuccess(string response, int requestStatus, int? documentNumber) =>
+            new ServiceResult { IsSuccess = true, Message = response, StatusCode = requestStatus,DocumentNumber =documentNumber };
         public static ServiceResult success(string response, int requestStatus) =>
             new ServiceResult { IsSuccess = true, Message = response, StatusCode = requestStatus };
 

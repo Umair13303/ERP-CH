@@ -13,6 +13,8 @@ namespace SharedUI.Models.SQLParameters
         public string? Description { get; set; }
         public int? OrganisationTypeId { get; set; }
         public int? CountryId { get; set; }
+        public int? AccountTypeId { get; set; }
+        public int? AccountCategoryId { get; set; }
         public int? CityId { get; set; }
         public int? LocationId { get; set; }
         public int? DepartmentId { get; set; }
@@ -31,6 +33,7 @@ namespace SharedUI.Models.SQLParameters
         public string? AllowedBranchIds { get; set; }
         public string? AdditionalDetail { get; set; }
         public string? AttributeIds { get; set; }
+        public string? CNICNumber { get; set; }
         public decimal? CriticalLimit { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
@@ -50,6 +53,7 @@ namespace SharedUI.Models.SQLParameters
         public int? InventoryAccountId { get; set; }
         public int? SaleRevenueAccountId { get; set; }
         public int? CostOfSaleAccountId { get; set; }
+        public int? ReceivableAccountId { get; set; }
         public int? SaleUnitId { get; set; }
         public int? ItemTypeId { get; set; }
         public int? HSCodeId { get; set; }

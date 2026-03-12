@@ -5,6 +5,7 @@ using OrganisationSetup.Areas.AccountNfinance.Services;
 using OrganisationSetup.Areas.ApplicationConfiguration.Services;
 using OrganisationSetup.Areas.CompanySetup.Services;
 using OrganisationSetup.Areas.Inventory.Services;
+using OrganisationSetup.Areas.SaleOperation.Services;
 using OrganisationSetup.Models.DAL;
 using OrganisationSetup.Models.DAL.StoredProcedure;
 using OrganisationSetup.Services;
@@ -72,6 +73,10 @@ builder.Services.AddScoped<ICompanySetupRetriever, CompanySetupRetriever>();
 builder.Services.AddScoped<IInventoryUpsert, InventoryUpsertService>();
 builder.Services.AddScoped<IInventoryValidation, InventoryValidationService>();
 builder.Services.AddScoped<IInventoryRetriever, InventoryRetrieverService>();
+
+builder.Services.AddScoped<ISaleOperationUpsert, SaleOperationUpsertService>();
+builder.Services.AddScoped<ISaleOperationValidation, SaleOperationValidationService>();
+builder.Services.AddScoped<ISaleOperationRetriever, SaleOperationRetrieverService>();
 
 
 #endregion

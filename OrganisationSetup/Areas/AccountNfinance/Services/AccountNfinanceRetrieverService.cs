@@ -12,6 +12,7 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
     public interface IAccountNfinanceRetriever
     {
         Task<List<AFChartOfAccount>> populateChartOfAccountByParam(string operationType, int? filterConditionId, int? accountCatagoryId);
+        Task<AFChartOfAccount> PopulateChartOfAccountInfo(Guid? guid);
 
 
     }
@@ -70,5 +71,25 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
                     return new List<AFChartOfAccount>();
             }
         }
+        public async Task<AFChartOfAccount> PopulateChartOfAccountInfo(Guid? guid)
+        {
+            if (!guid.HasValue)
+            {
+                return new AFChartOfAccount();
+            }
+
+            return await _eRPOSContext.AFChartOfAccount
+                .AsNoTracking()
+                .Where(x =>
+                    x.GuID == guid.Value &&
+                    x.Status == true 
+                    ).Select(x => new AFChartOfAccount
+                {
+                    Id = x.Id,
+                    GuID = x.GuID,
+                    Description = x.Description
+                }).FirstOrDefaultAsync() ?? new AFChartOfAccount();
+        }
+
     }
 }
