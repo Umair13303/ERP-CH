@@ -51,7 +51,7 @@ namespace OrganisationSetup.Areas.CompanySetup.Services
                     var result = await _repo.UpsertInto_CSDepartment(
                                                             postedData.OperationType,
                                                             postedData.GuID,
-                                                            postedData.Description!.Trim(),
+                                                            postedData.Description?.Trim(),
                                                             DateTime.Now,
                                                             userInfo.UserId,
                                                             DateTime.Now,

@@ -56,32 +56,22 @@ namespace OrganisationSetup.Areas.SaleOperation.Services
                 try
                 {
                     #region PRESERVE DATA & GENERATE DEFAULT CUSTOMER ACCOUNTS
-                    string? customerName = postedData.Description;
-                    string accountReceivableDescription = customerName + "--" + "Account Receivable" + Guid.NewGuid().ToString("N").Substring(0, 8);
-                    int? accountTypeId = 1;
-                    int? accountCatagoryId = 20;
-
-                    postedData.Description = accountReceivableDescription;
-                    postedData.AccountTypeId = accountTypeId;
-                    postedData.AccountCategoryId = accountCatagoryId;
-
-                    var accountReceivableGeneration = await _anfUService.updateInsertDataInto_AFChartOfAccount(postedData);
-
+                    postedData.AccountCategoryId = (int?)AccountCategory.ACCOUNTS_RECEIVABLE;
+                    postedData.FinancialStatementId = (int?)FinancialStatement.INCOME_STATEMENT;
+                    var accountReceivableGeneration = await _anfUService.updateInsertDataInto_AFChartOfAccount(postedData,true);
                     postedData.ReceivableAccountId = accountReceivableGeneration.DocumentNumber;
-                    postedData.Description = customerName;
-
                     #endregion
 
 
                     var result = await _repo.UpsertInto_SOCustomer(
                                                             postedData.OperationType,
                                                             postedData.GuID,
-                                                            postedData.Description!.Trim(),
-                                                            postedData.Contact!.Trim(),
-                                                            postedData.Email!.Trim(),
-                                                            postedData.CNICNumber!.Trim(),
-                                                            postedData.Address!.Trim(),
-                                                            postedData.AdditionalDetail!.Trim(),
+                                                            postedData.Description?.Trim(),
+                                                            postedData.Contact?.Trim(),
+                                                            postedData.Email?.Trim(),
+                                                            postedData.CNICNumber?.Trim(),
+                                                            postedData.Address?.Trim(),
+                                                            postedData.AdditionalDetail?.Trim(),
                                                             postedData.ReceivableAccountId,
                                                             DateTime.Now,
                                                             userInfo.UserId,

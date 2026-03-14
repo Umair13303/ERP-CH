@@ -13,7 +13,7 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
 {
     public interface IAccountNfinanceUpsert
     {
-        Task<ServiceResult> updateInsertDataInto_AFChartOfAccount(PostedData postedData);
+        Task<ServiceResult> updateInsertDataInto_AFChartOfAccount(PostedData postedData, bool? isCustomerAutoAccount);
 
 
 
@@ -33,7 +33,7 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
             _validationService = validationService;
             _retrieverService = retrieverService;
         }
-        public async Task<ServiceResult> updateInsertDataInto_AFChartOfAccount(PostedData postedData)
+        public async Task<ServiceResult> updateInsertDataInto_AFChartOfAccount(PostedData postedData, bool? isCustomerAutoAccount)
         {
             var userInfo = TempUser.Fill(_httpContextAccessor);
 
@@ -53,29 +53,25 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ACCompany(
-                                                            postedData.OperationType,
-                                                            postedData.GuID,
-                                                            postedData.Description!.Trim(),
-                                                            postedData.CountryId,
-                                                            postedData.CityId,
-                                                            postedData.Contact!.Trim(),
-                                                            postedData.Email!.Trim(),
-                                                            postedData.Address!.Trim(),
-                                                            postedData.Website!.Trim(),
-                                                            null,
-                                                            DateTime.Now,
-                                                            userInfo.UserId,
-                                                            DateTime.Now,
-                                                            userInfo.UserId,
-                                                            (int?)DocumentType.accountChartOfAccount,
-                                                            (int?)DocumentStatus.active,
-                                                            userInfo.BranchId,
-                                                            userInfo.CompanyId,
-                                                            con, transaction);
+                    var result = await _repo.UpsertInto_AFChartOfAccount(
+                                                           postedData.OperationType,
+                                                           postedData.GuID,
+                                                           isCustomerAutoAccount == false ? postedData.Description?.Trim() : postedData.DefaultReceivableAccount?.Trim(),
+                                                           postedData.AccountCategoryId,
+                                                           postedData.FinancialStatementId,
+                                                           DateTime.Now,
+                                                           userInfo.UserId,
+                                                           DateTime.Now,
+                                                           userInfo.UserId,
+                                                           (int?)DocumentType.accountChartOfAccount,
+                                                           (int?)DocumentStatus.active,
+                                                           userInfo.BranchId,
+                                                           userInfo.CompanyId,
+                                                           con, transaction);
+
                     await transaction.CommitAsync();
 
-                    var accountInfoByGuID= await _retrieverService.PopulateChartOfAccountInfo(postedData.GuID);
+                    var accountInfoByGuID = await _retrieverService.PopulateChartOfAccountInfo(postedData.GuID);
                     return ServiceResult.internalSuccess(Message.serverResponse(result), result.Value, accountInfoByGuID.Id);
                 }
                 catch (Exception ex)

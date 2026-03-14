@@ -11,10 +11,12 @@ namespace SharedUI.Models.SQLParameters
         public string? OperationType { get; set; }
         public Guid? GuID { get; set; }
         public string? Description { get; set; }
+        public string? DefaultReceivableAccount { get; set; }
         public int? OrganisationTypeId { get; set; }
         public int? CountryId { get; set; }
         public int? AccountTypeId { get; set; }
         public int? AccountCategoryId { get; set; }
+        public int? FinancialStatementId { get; set; }
         public int? CityId { get; set; }
         public int? LocationId { get; set; }
         public int? DepartmentId { get; set; }

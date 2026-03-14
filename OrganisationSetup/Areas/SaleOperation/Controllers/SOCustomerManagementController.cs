@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrganisationSetup.Areas.CompanySetup.Services;
+using OrganisationSetup.Areas.SaleOperation.Services;
 using OrganisationSetup.Services;
 using SharedUI.Models.Configurations;
 using SharedUI.Models.Enums;
+using SharedUI.Models.SQLParameters;
 
 namespace OrganisationSetup.Areas.SaleOperation.Controllers
 {
@@ -12,9 +15,12 @@ namespace OrganisationSetup.Areas.SaleOperation.Controllers
     public class SOCustomerManagementController : Controller
     {
         private readonly ICommon _commonsServices;
-        public SOCustomerManagementController( ICommon commonsServices)
+        private readonly ISaleOperationUpsert _souService;
+
+        public SOCustomerManagementController( ICommon commonsServices, ISaleOperationUpsert souService)
         {
             _commonsServices = commonsServices;
+            _souService = souService;
         }
         #region PORTION CONTAIN CODE TO: RENDER VIEW
         public IActionResult CreateUpdate_SOCustomer_UI(UISetting ui)
@@ -39,5 +45,19 @@ namespace OrganisationSetup.Areas.SaleOperation.Controllers
         }
         #endregion
 
+        #region PORTION CONTAIN CODE TO: ADD/EDIT/DELETE DOCUMENT
+        [HttpPost]
+        public async Task<IActionResult> createUpdateCustomer([FromBody] PostedData postedData)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+            }
+            if (!ModelState.IsValid) return View(postedData);
+
+            var result = await _souService.updateInsertDataInto_SOCustomer(postedData);
+            return Json(new { result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
+        }
+        #endregion
     }
 }

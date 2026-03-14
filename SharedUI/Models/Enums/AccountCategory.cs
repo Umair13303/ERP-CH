@@ -32,4 +32,9 @@ namespace SharedUI.Models.Enums
         ACCOUNTS_PAYABLE = 22,
         INVENTORY = 23,
     }
+    public enum FinancialStatement
+    {
+        BALANCE_SHEET=1,
+        INCOME_STATEMENT=2
+    }
 }

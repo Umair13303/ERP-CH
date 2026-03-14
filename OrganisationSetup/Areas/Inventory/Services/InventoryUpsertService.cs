@@ -59,7 +59,7 @@ namespace OrganisationSetup.Areas.Inventory.Services
                     var result = await _repo.UpsertInto_ISection(
                                                             postedData.OperationType,
                                                             postedData.GuID,
-                                                            postedData.Description!.Trim(),
+                                                            postedData.Description?.Trim(),
                                                             postedData.DepartmentId,
                                                             DateTime.Now,
                                                             userInfo.UserId,
@@ -109,7 +109,7 @@ namespace OrganisationSetup.Areas.Inventory.Services
                     var result = await _repo.UpsertInto_ICategory(
                                                             postedData.OperationType,
                                                             postedData.GuID,
-                                                            postedData.Description!.Trim(),
+                                                            postedData.Description?.Trim(),
                                                             postedData.DepartmentId,
                                                             postedData.SectionId,
                                                             DateTime.Now,
@@ -160,7 +160,7 @@ namespace OrganisationSetup.Areas.Inventory.Services
                     var result = await _repo.UpsertInto_ISubCategory(
                                                             postedData.OperationType,
                                                             postedData.GuID,
-                                                            postedData.Description!.Trim(),
+                                                            postedData.Description?.Trim(),
                                                             postedData.DepartmentId,
                                                             postedData.SectionId,
                                                             postedData.CategoryId,
@@ -212,7 +212,7 @@ namespace OrganisationSetup.Areas.Inventory.Services
                     var result = await _repo.UpsertInto_IBrand(
                                                             postedData.OperationType,
                                                             postedData.GuID,
-                                                            postedData.Description!.Trim(),
+                                                            postedData.Description?.Trim(),
                                                             DateTime.Now,
                                                             userInfo.UserId,
                                                             DateTime.Now,
@@ -261,11 +261,11 @@ namespace OrganisationSetup.Areas.Inventory.Services
                     var result = await _repo.UpsertInto_IProduct(
                                                             postedData.OperationType,
                                                             postedData.GuID,
-                                                            postedData.Description!.Trim(),
-                                                            postedData.MachineNumber!.Trim(),
-                                                            postedData.SKU!.Trim(),
-                                                            postedData.AdditionalDetail!.Trim(),
-                                                            postedData.AttributeIds!.Trim(),
+                                                            postedData.Description?.Trim(),
+                                                            postedData.MachineNumber?.Trim(),
+                                                            postedData.SKU?.Trim(),
+                                                            postedData.AdditionalDetail?.Trim(),
+                                                            postedData.AttributeIds?.Trim(),
                                                             postedData.BrandId,
                                                             postedData.IsFavorite,
                                                             postedData.IsSaleTaxExclusive,
@@ -314,7 +314,7 @@ namespace OrganisationSetup.Areas.Inventory.Services
             {
                 postedData.GuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isIBrandValid(postedData.OperationType, postedData.GuID, postedData.Description);
+            bool? isOperationPermitted = await _validationService.isIProductValid(postedData.OperationType, postedData.GuID, postedData.Description, postedData.MachineNumber,postedData.SKU);
 
             if (isOperationPermitted == true)
             {

@@ -51,6 +51,10 @@ function createUpdateDataIntoDB() {
     var address = $("#TextBoxAddress").val();
     var additionalDetail = $("#TextBoxAdditionalDetail").val();
     var isAutoChartOfAccount = $("#CheckBoxIsAutoChartOfAccount").prop("checked");
+    var defaultReceivableAccount = null;
+    if (isAutoChartOfAccount == true) {
+        defaultReceivableAccount = description + " Default Receivable Account";
+    }
 
     var jsonData = {
         OperationType: operationType,
@@ -62,6 +66,8 @@ function createUpdateDataIntoDB() {
         Address: address,
         AdditionalDetail: additionalDetail,
         IsAutoChartOfAccount: isAutoChartOfAccount,
+        DefaultReceivableAccount: defaultReceivableAccount,
+
     };
     $.ajax({
         url: window.basePath + "SaleOperation/SOCustomerManagement/createUpdateCustomer",
