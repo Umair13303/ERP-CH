@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrganisationSetup.Models.DAL;
 using OrganisationSetup.Models.DAL.StoredProcedure;
+using SharedUI.Models.Contexts;
 using SharedUI.Models.Enums;
 using SharedUI.Models.ViewModels;
 
@@ -20,16 +21,19 @@ namespace OrganisationSetup.Services
         Task<List<vItemType>> populateItemTypeByParam();
         Task<List<vHSCode>> populateHSCodeByParam();
         Task<List<vSaleTaxType>> populateSaleTaxTypeByParam();
+        Task<List<osvChartOfAccount>> populateOSvChartOfAccountByParam(string operationType, int? filterConditionId, int? accountCatagoryId);
 
     }
     public class CommonServices : ICommon
     {
         private readonly ERPOrganisationSetupContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CommonServices( ERPOrganisationSetupContext context)
+
+        public CommonServices( ERPOrganisationSetupContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
-
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<int?[]?> getDocumentStatusByParam(string operationType)
         {
@@ -96,5 +100,34 @@ namespace OrganisationSetup.Services
             var result = await _context.vSaleTaxType.AsNoTracking().ToListAsync();
             return result;
         }
+        public async Task<List<osvChartOfAccount>> populateOSvChartOfAccountByParam(string operationType, int? filterConditionId, int? accountCatagoryId)
+        {
+            var userInfo = TempUser.Fill(_httpContextAccessor);
+            if (!userInfo.IsAuthenticated)
+            {
+                return new List<osvChartOfAccount>();
+            }
+            int?[]? documentStatusIds = await getDocumentStatusByParam(operationType);
+            if (documentStatusIds == null) return new List<osvChartOfAccount>();
+            List<osvChartOfAccount> accountRecord = new List<osvChartOfAccount>();
+            switch (filterConditionId)
+            {
+                case ((int?)FilterConditions.osvChartOfAccount_Operation_ByDefaultSetting):
+                    return await _context.osvChartOfAccount.AsNoTracking()
+                        .Where(x =>
+                        x.CompanyId == userInfo.CompanyId
+                        && x.AccountCategoryId == accountCatagoryId
+                        && x.Status == true
+                        && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new osvChartOfAccount
+                        {
+                            Id = x.Id,
+                            GuID = x.GuID,
+                            Description = x.Description
+                        }).ToListAsync();
+                default:
+                    return new List<osvChartOfAccount>();
+            }
+        }
+
     }
 }

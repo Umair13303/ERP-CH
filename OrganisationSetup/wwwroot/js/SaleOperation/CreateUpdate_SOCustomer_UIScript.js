@@ -53,8 +53,9 @@ function createUpdateDataIntoDB() {
     var isAutoChartOfAccount = $("#CheckBoxIsAutoChartOfAccount").prop("checked");
     var defaultReceivableAccount = null;
     if (isAutoChartOfAccount == true) {
-        defaultReceivableAccount = description + " Default Receivable Account";
+        defaultReceivableAccount = description.trim() + " Default Receivable Account";
     }
+    var openingBalance = $("#TextBoxOpeningBalance").val();
 
     var jsonData = {
         OperationType: operationType,
@@ -67,7 +68,7 @@ function createUpdateDataIntoDB() {
         AdditionalDetail: additionalDetail,
         IsAutoChartOfAccount: isAutoChartOfAccount,
         DefaultReceivableAccount: defaultReceivableAccount,
-
+        OpeningBalance: openingBalance
     };
     $.ajax({
         url: window.basePath + "SaleOperation/SOCustomerManagement/createUpdateCustomer",

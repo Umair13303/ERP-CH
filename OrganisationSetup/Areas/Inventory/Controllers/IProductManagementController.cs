@@ -87,19 +87,19 @@ namespace OrganisationSetup.Areas.Inventory.Controllers
         [HttpGet]
         public async Task<IActionResult> populateInventoryAccountListByParam(string operationType)
         {
-            var result = await _IafService.populateChartOfAccountByParam(operationType, (int?)FilterConditions.afChartOfAccount_Operation_ByDefaultSetting, (int?)AccountCategory.INVENTORY);
+            var result = await _IcService.populateOSvChartOfAccountByParam(operationType, (int?)FilterConditions.osvChartOfAccount_Operation_ByDefaultSetting, (int?)AccountCategory.INVENTORY);
             return Json(result);
         }
         [HttpGet]
         public async Task<IActionResult> populateSaleRevenueAccountListByParam(string operationType)
         {
-            var result = await _IafService.populateChartOfAccountByParam(operationType, (int?)FilterConditions.afChartOfAccount_Operation_ByDefaultSetting, (int?)AccountCategory.SALES__REVENUES);
+            var result = await _IcService.populateOSvChartOfAccountByParam(operationType, (int?)FilterConditions.osvChartOfAccount_Operation_ByDefaultSetting, (int?)AccountCategory.SALES__REVENUES);
             return Json(result);
         }
         [HttpGet]
         public async Task<IActionResult> populateCostOfSaleAccountListByParam(string operationType)
         {
-            var result = await _IafService.populateChartOfAccountByParam(operationType,(int?)FilterConditions.afChartOfAccount_Operation_ByDefaultSetting, (int?)AccountCategory.COST_OF_SALES);
+            var result = await _IcService.populateOSvChartOfAccountByParam(operationType,(int?)FilterConditions.osvChartOfAccount_Operation_ByDefaultSetting, (int?)AccountCategory.COST_OF_SALES);
             return Json(result);
         }
         [HttpGet]
@@ -134,8 +134,7 @@ namespace OrganisationSetup.Areas.Inventory.Controllers
             }
             if (!ModelState.IsValid) return View(postedData);
 
-            var result_one = await _IuService.updateInsertDataInto_IProduct(postedData);
-            var result = await _IuService.updateInsertDataInto_IProductATI(postedData);
+            var result = await _IuService.updateInsertDataInto_IProduct(postedData);
             return Json(new { result.IsSuccess, responseCode = result.StatusCode, message = result.Message });
         }
         #endregion

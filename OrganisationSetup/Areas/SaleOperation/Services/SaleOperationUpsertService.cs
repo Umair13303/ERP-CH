@@ -73,6 +73,7 @@ namespace OrganisationSetup.Areas.SaleOperation.Services
                                                             postedData.Address?.Trim(),
                                                             postedData.AdditionalDetail?.Trim(),
                                                             postedData.ReceivableAccountId,
+                                                            postedData.OpeningBalance,
                                                             DateTime.Now,
                                                             userInfo.UserId,
                                                             DateTime.Now,

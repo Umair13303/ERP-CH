@@ -10,6 +10,7 @@ namespace SharedUI.Models.SQLParameters
     {
         public string? OperationType { get; set; }
         public Guid? GuID { get; set; }
+        public Guid? ProductATIGuID { get; set; }
         public string? Description { get; set; }
         public string? DefaultReceivableAccount { get; set; }
         public int? OrganisationTypeId { get; set; }
@@ -37,6 +38,7 @@ namespace SharedUI.Models.SQLParameters
         public string? AttributeIds { get; set; }
         public string? CNICNumber { get; set; }
         public decimal? CriticalLimit { get; set; }
+        public decimal? OpeningBalance { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }

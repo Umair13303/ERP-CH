@@ -1,12 +1,13 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OrganisationSetup.Models.DAL;
 using OrganisationSetup.Models.DAL.StoredProcedure;
 using SharedUI.Models.Contexts;
 using SharedUI.Models.Enums;
+using SharedUI.Models.Responses;
 using SharedUI.Models.SQLParameters;
 using System.Diagnostics;
-using SharedUI.Models.Responses;
 
 
 namespace OrganisationSetup.Areas.Inventory.Services
@@ -43,12 +44,18 @@ namespace OrganisationSetup.Areas.Inventory.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? sectionGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                sectionGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isISectionValid(postedData.OperationType, postedData.GuID, postedData.DepartmentId, postedData.Description);
-
+            else
+            {
+                sectionGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isISectionValid(postedData.OperationType, sectionGuID,postedData.DepartmentId, postedData.Description);
+            #endregion
             if (isOperationPermitted == true)
             {
                 using var con = new SqlConnection(_connectionString);
@@ -56,9 +63,10 @@ namespace OrganisationSetup.Areas.Inventory.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ISection(
+                    #region PORTION FOR :: UPSERT INTO dbo.ACUser
+                    var ISection = await _repo.UpsertInto_ISection(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            sectionGuID,
                                                             postedData.Description?.Trim(),
                                                             postedData.DepartmentId,
                                                             DateTime.Now,
@@ -70,9 +78,22 @@ namespace OrganisationSetup.Areas.Inventory.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? sectionResponse = ISection.Value;
+                    switch (sectionResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+                    return ServiceResult.success(Message.serverResponse(sectionResponse), sectionResponse.Value);
                 }
                 catch (Exception ex)
                 {
@@ -93,11 +114,18 @@ namespace OrganisationSetup.Areas.Inventory.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? categoryGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                categoryGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isICategoryValid(postedData.OperationType, postedData.GuID, postedData.DepartmentId, postedData.Description);
+            else
+            {
+                categoryGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isICategoryValid(postedData.OperationType, categoryGuID, postedData.DepartmentId, postedData.Description);
+            #endregion
 
             if (isOperationPermitted == true)
             {
@@ -106,9 +134,10 @@ namespace OrganisationSetup.Areas.Inventory.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ICategory(
+                    #region PORTION FOR :: UPSERT INTO dbo.ACUser
+                    var ICategory = await _repo.UpsertInto_ICategory(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            categoryGuID,
                                                             postedData.Description?.Trim(),
                                                             postedData.DepartmentId,
                                                             postedData.SectionId,
@@ -121,9 +150,23 @@ namespace OrganisationSetup.Areas.Inventory.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? categoryResponse = ICategory.Value;
+                    switch (categoryResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+
+                    return ServiceResult.success(Message.serverResponse(categoryResponse), categoryResponse.Value);
                 }
                 catch (Exception ex)
                 {
@@ -144,11 +187,18 @@ namespace OrganisationSetup.Areas.Inventory.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? subCategoryGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                subCategoryGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isISubCategoryValid(postedData.OperationType, postedData.GuID,  postedData.CategoryId, postedData.Description);
+            else
+            {
+                subCategoryGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isISubCategoryValid(postedData.OperationType, subCategoryGuID,postedData.CategoryId, postedData.Description);
+            #endregion
 
             if (isOperationPermitted == true)
             {
@@ -157,9 +207,10 @@ namespace OrganisationSetup.Areas.Inventory.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ISubCategory(
+                    #region PORTION FOR :: UPSERT INTO dbo.ISubCategory
+                    var ISubCategory = await _repo.UpsertInto_ISubCategory(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            subCategoryGuID,
                                                             postedData.Description?.Trim(),
                                                             postedData.DepartmentId,
                                                             postedData.SectionId,
@@ -173,9 +224,22 @@ namespace OrganisationSetup.Areas.Inventory.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? subCategoryResponse = ISubCategory.Value;
+                    switch (subCategoryResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+                    return ServiceResult.success(Message.serverResponse(subCategoryResponse), subCategoryResponse.Value);
                 }
                 catch (Exception ex)
                 {
@@ -196,11 +260,18 @@ namespace OrganisationSetup.Areas.Inventory.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? brandGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                brandGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isIBrandValid(postedData.OperationType, postedData.GuID, postedData.Description);
+            else
+            {
+                brandGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isIBrandValid(postedData.OperationType, brandGuID, postedData.Description);
+            #endregion
 
             if (isOperationPermitted == true)
             {
@@ -209,9 +280,10 @@ namespace OrganisationSetup.Areas.Inventory.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_IBrand(
+                    #region PORTION FOR :: UPSERT INTO dbo.IBrand
+                    var IBrand = await _repo.UpsertInto_IBrand(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            brandGuID,
                                                             postedData.Description?.Trim(),
                                                             DateTime.Now,
                                                             userInfo.UserId,
@@ -222,9 +294,23 @@ namespace OrganisationSetup.Areas.Inventory.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? brandResponse = IBrand.Value;
+                    switch (brandResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+
+                    return ServiceResult.success(Message.serverResponse(brandResponse), brandResponse.Value);
                 }
                 catch (Exception ex)
                 {
@@ -245,11 +331,21 @@ namespace OrganisationSetup.Areas.Inventory.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? productGuID = Guid.Empty;
+            Guid? productATIGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                productGuID = Guid.NewGuid();
+                productATIGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isIProductValid(postedData.OperationType, postedData.GuID, postedData.Description, postedData.MachineNumber, postedData.SKU);
+            else
+            {
+                productGuID = postedData.GuID;
+                productATIGuID = postedData.ProductATIGuID;
+            }
+            bool? isOperationPermitted = await _validationService.isIProductValid(postedData.OperationType, productGuID, postedData.Description, postedData.MachineNumber, postedData.SKU);
+            #endregion
 
             if (isOperationPermitted == true)
             {
@@ -258,9 +354,10 @@ namespace OrganisationSetup.Areas.Inventory.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_IProduct(
+                    #region PORTION FOR :: UPSERT INTO dbo.IProduct
+                    var IProduct = await _repo.UpsertInto_IProduct(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            productGuID,
                                                             postedData.Description?.Trim(),
                                                             postedData.MachineNumber?.Trim(),
                                                             postedData.SKU?.Trim(),
@@ -284,11 +381,52 @@ namespace OrganisationSetup.Areas.Inventory.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
-                    var productId = await _eRPOSContext.IProduct.AsNoTracking().Where(x => x.GuID == postedData.GuID).Select(x => (int?)x.Id).FirstOrDefaultAsync();
-                    postedData.ProductId = productId.Value;
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    int? productResponse = IProduct.response;
+                    switch (productResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            #region PORTION FOR :: UPSERT INTO dbo.IProductATI
+                            var IProductATI = await _repo.UpsertInto_IProductATI(
+                                                            postedData.OperationType,
+                                                            productATIGuID,
+                                                            IProduct.insertedId!.Value,
+                                                            postedData.InventoryAccountId,
+                                                            postedData.SaleRevenueAccountId,
+                                                            postedData.CostOfSaleAccountId,
+                                                            postedData.ItemTypeId,
+                                                            postedData.HSCodeId,
+                                                            postedData.SaleTaxTypeId,
+                                                            DateTime.Now,
+                                                            userInfo.UserId,
+                                                            DateTime.Now,
+                                                            userInfo.UserId,
+                                                            (int?)DocumentType.productATI,
+                                                            (int?)DocumentStatus.active,
+                                                            con, transaction);
+                            #endregion
+
+                            #region PORTION FOR :: HANLDE TRANSACTION
+                            int? productATIResponse = IProductATI.Value;
+                            switch (IProductATI)
+                            {
+                                case (int)Code.Created:
+                                case (int)Code.Accepted:
+                                    await transaction.CommitAsync();
+                                    break;
+                                default:
+                                    await transaction.RollbackAsync();
+                                    return ServiceResult.failure(Message.serverResponse((int?)Code.BadRequest), (int)Code.BadRequest);
+                            }
+                            #endregion
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            return ServiceResult.failure(Message.serverResponse((int?)Code.BadRequest), (int)Code.BadRequest);
+                    }
+                    return ServiceResult.success(Message.serverResponse(productResponse), productResponse!.Value);
                 }
                 catch (Exception ex)
                 {

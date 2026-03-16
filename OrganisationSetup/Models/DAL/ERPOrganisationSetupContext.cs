@@ -21,9 +21,9 @@ public partial class ERPOrganisationSetupContext : DbContext
 
     public virtual DbSet<AFChartOfAccount> AFChartOfAccount { get; set; }
 
-    public virtual DbSet<CSDepartment> CSDepartment { get; set; }
+    public virtual DbSet<AFCustomerLedger> AFCustomerLedger { get; set; }
 
-    public virtual DbSet<DCSChartOfAccount> DCSChartOfAccount { get; set; }
+    public virtual DbSet<CSDepartment> CSDepartment { get; set; }
 
     public virtual DbSet<IBrand> IBrand { get; set; }
 
@@ -36,6 +36,10 @@ public partial class ERPOrganisationSetupContext : DbContext
     public virtual DbSet<ISection> ISection { get; set; }
 
     public virtual DbSet<ISubCategory> ISubCategory { get; set; }
+
+    public virtual DbSet<SOCustomer> SOCustomer { get; set; }
+
+    public virtual DbSet<osvChartOfAccount> osvChartOfAccount { get; set; }
 
     public virtual DbSet<vAccountCatagory> vAccountCatagory { get; set; }
 
@@ -112,17 +116,27 @@ public partial class ERPOrganisationSetupContext : DbContext
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<AFCustomerLedger>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AFCustom__3214EC074B57650A");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.Credit)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Debit)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.TransactionDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<CSDepartment>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_ACDepartment");
 
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<DCSChartOfAccount>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__DSChartO__3214EC07090CCCDF");
         });
 
         modelBuilder.Entity<IBrand>(entity =>
@@ -170,6 +184,25 @@ public partial class ERPOrganisationSetupContext : DbContext
         modelBuilder.Entity<ISubCategory>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__ISubCate__3214EC0703940CCF");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<SOCustomer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__SOCustom__3214EC079C9ACE51");
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.OpeningBalance)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<osvChartOfAccount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_CSChartOfAccount");
 
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");

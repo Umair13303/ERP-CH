@@ -7,6 +7,7 @@ using SharedUI.Models.Enums;
 using SharedUI.Models.SQLParameters;
 using System.Diagnostics;
 using SharedUI.Models.Responses;
+using System.Configuration;
 
 
 namespace OrganisationSetup.Areas.AccountNfinance.Services
@@ -40,39 +41,58 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
-            if(postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? chartOfAccountGuID = Guid.Empty;
+            if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                chartOfAccountGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isAFChartOfAccountValid(postedData.OperationType,postedData.GuID,postedData.Description);
-
-            if(isOperationPermitted == true)
+            else
+            {
+                chartOfAccountGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isAFChartOfAccountValid(postedData.OperationType, chartOfAccountGuID, postedData.Description);
+            #endregion
+            if (isOperationPermitted == true)
             {
                 using var con = new SqlConnection(_connectionString);
                 await con.OpenAsync();
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_AFChartOfAccount(
-                                                           postedData.OperationType,
-                                                           postedData.GuID,
-                                                           isCustomerAutoAccount == false ? postedData.Description?.Trim() : postedData.DefaultReceivableAccount?.Trim(),
-                                                           postedData.AccountCategoryId,
-                                                           postedData.FinancialStatementId,
-                                                           DateTime.Now,
-                                                           userInfo.UserId,
-                                                           DateTime.Now,
-                                                           userInfo.UserId,
-                                                           (int?)DocumentType.accountChartOfAccount,
-                                                           (int?)DocumentStatus.active,
-                                                           userInfo.BranchId,
-                                                           userInfo.CompanyId,
-                                                           con, transaction);
+                    #region PORTION FOR :: UPSERT INTO dbo.AFChartOfAccount
+                    var AFChartOfAccount = await _repo.UpsertInto_AFChartOfAccount(
+                                                      postedData.OperationType,
+                                                      chartOfAccountGuID,
+                                                      isCustomerAutoAccount == false ? postedData.Description?.Trim() : postedData.DefaultReceivableAccount?.Trim(),
+                                                      postedData.AccountCategoryId,
+                                                      postedData.FinancialStatementId,
+                                                      DateTime.Now,
+                                                      userInfo.UserId,
+                                                      DateTime.Now,
+                                                      userInfo.UserId,
+                                                      (int?)DocumentType.accountChartOfAccount,
+                                                      (int?)DocumentStatus.active,
+                                                      userInfo.BranchId,
+                                                      userInfo.CompanyId,
+                                                      con, transaction);
+                    #endregion
 
-                    await transaction.CommitAsync();
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? chartOfAccountResponse = AFChartOfAccount.Value;
+                    switch (chartOfAccountResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
 
-                    var accountInfoByGuID = await _retrieverService.PopulateChartOfAccountInfo(postedData.GuID);
-                    return ServiceResult.internalSuccess(Message.serverResponse(result), result.Value, accountInfoByGuID.Id);
+                    return ServiceResult.success(Message.serverResponse(chartOfAccountResponse), (int)chartOfAccountResponse);
                 }
                 catch (Exception ex)
                 {

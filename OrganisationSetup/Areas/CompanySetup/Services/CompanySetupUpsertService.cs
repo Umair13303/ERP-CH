@@ -35,11 +35,18 @@ namespace OrganisationSetup.Areas.CompanySetup.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? departmentGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                departmentGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isCSDepartmentValid(postedData.OperationType, postedData.GuID, postedData.Description);
+            else
+            {
+                departmentGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isCSDepartmentValid(postedData.OperationType, departmentGuID, postedData.Description);
+            #endregion
 
             if (isOperationPermitted == true)
             {
@@ -48,9 +55,10 @@ namespace OrganisationSetup.Areas.CompanySetup.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_CSDepartment(
+                    #region PORTION FOR :: UPSERT INTO dbo.CSDepartment
+                    var CSDepartment = await _repo.UpsertInto_CSDepartment(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            departmentGuID,
                                                             postedData.Description?.Trim(),
                                                             DateTime.Now,
                                                             userInfo.UserId,
@@ -61,9 +69,23 @@ namespace OrganisationSetup.Areas.CompanySetup.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? departmentResponse = CSDepartment.Value;
+                    switch (departmentResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+
+                    return ServiceResult.success(Message.serverResponse(departmentResponse), departmentResponse.Value);
                 }
                 catch (Exception ex)
                 {

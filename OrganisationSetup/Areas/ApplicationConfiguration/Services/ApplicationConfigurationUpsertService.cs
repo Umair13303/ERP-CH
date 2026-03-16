@@ -39,42 +39,65 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
-            if(postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? companyGuID = Guid.Empty;
+            if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+               companyGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isACCompanyValid(postedData.OperationType,postedData.GuID,postedData.Description);
+            else
+            {
+               companyGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isACCompanyValid(postedData.OperationType, companyGuID, postedData.Description);
+            #endregion
 
-            if(isOperationPermitted == true)
+            if (isOperationPermitted == true)
             {
                 using var con = new SqlConnection(_connectionString);
                 await con.OpenAsync();
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ACCompany(
-                                                            postedData.OperationType,
-                                                            postedData.GuID,
-                                                            postedData.Description?.Trim(),
-                                                            postedData.CountryId,
-                                                            postedData.CityId,
-                                                            postedData.Contact?.Trim(),
-                                                            postedData.Email?.Trim(),
-                                                            postedData.Address?.Trim(),
-                                                            postedData.Website?.Trim(),
-                                                            null,
-                                                            DateTime.Now,
-                                                            userInfo.UserId,
-                                                            DateTime.Now,
-                                                            userInfo.UserId,
-                                                            (int?)DocumentType.company,
-                                                            (int?)DocumentStatus.active,
-                                                            userInfo.BranchId,
-                                                            userInfo.CompanyId,
-                                                            con, transaction);
-                    await transaction.CommitAsync();
+                    #region PORTION FOR :: UPSERT INTO dbo.ACCompany
+                    var ACCompany = await _repo.UpsertInto_ACCompany(
+                                             postedData.OperationType,
+                                             companyGuID,
+                                             postedData.Description?.Trim(),
+                                             postedData.CountryId,
+                                             postedData.CityId,
+                                             postedData.Contact?.Trim(),
+                                             postedData.Email?.Trim(),
+                                             postedData.Address?.Trim(),
+                                             postedData.Website?.Trim(),
+                                             null,
+                                             DateTime.Now,
+                                             userInfo.UserId,
+                                             DateTime.Now,
+                                             userInfo.UserId,
+                                             (int?)DocumentType.company,
+                                             (int?)DocumentStatus.active,
+                                             userInfo.BranchId,
+                                             userInfo.CompanyId,
+                                             con, transaction);
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #endregion
+
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? companyResponse = ACCompany.Value;
+                    switch (companyResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+
+                    return ServiceResult.success(Message.serverResponse(companyResponse), (int)companyResponse);
                 }
                 catch (Exception ex)
                 {
@@ -95,11 +118,18 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? branchGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                branchGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isACBranchValid(postedData.OperationType, postedData.GuID, postedData.Description);
+            else
+            {
+                branchGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isACBranchValid(postedData.OperationType, branchGuID, postedData.Description);
+            #endregion
 
             if (isOperationPermitted == true)
             {
@@ -108,9 +138,10 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ACBranch(
+                    #region PORTION FOR :: UPSERT INTO dbo.ACBranch
+                    var ACBranch = await _repo.UpsertInto_ACBranch(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            branchGuID,
                                                             postedData.Description?.Trim(),
                                                             postedData.OrganisationTypeId,
                                                             postedData.CountryId,
@@ -128,9 +159,23 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? branchResponse = ACBranch.Value;
+                    switch (branchResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+
+                    return ServiceResult.success(Message.serverResponse(branchResponse), branchResponse.Value);
                 }
                 catch (Exception ex)
                 {
@@ -151,12 +196,19 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
             if (!userInfo.IsAuthenticated)
                 return ServiceResult.failure(Message.serverResponse((int?)Code.Unauthorized), (int)Code.Unauthorized);
 
+            #region PORTION FOR :: DOCUMENT SETTING ON BASIS OF OperationType
+            Guid? userGuID = Guid.Empty;
             if (postedData.OperationType == nameof(OperationType.INSERT_DATA_INTO_DB))
             {
-                postedData.GuID = Guid.NewGuid();
+                userGuID = Guid.NewGuid();
             }
-            bool? isOperationPermitted = await _validationService.isACUserValid(postedData.OperationType, postedData.GuID, postedData.Description);
-
+            else
+            {
+                userGuID = postedData.GuID;
+            }
+            bool? isOperationPermitted = await _validationService.isACUserValid(postedData.OperationType, userGuID, postedData.Description);
+            #endregion
+            
             if (isOperationPermitted == true)
             {
                 using var con = new SqlConnection(_connectionString);
@@ -164,9 +216,10 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                 using var transaction = con.BeginTransaction();
                 try
                 {
-                    var result = await _repo.UpsertInto_ACUser(
+                    #region PORTION FOR :: UPSERT INTO dbo.ACUser
+                    var ACUser = await _repo.UpsertInto_ACUser(
                                                             postedData.OperationType,
-                                                            postedData.GuID,
+                                                            userGuID,
                                                             postedData.Description?.Trim(),
                                                             postedData.Password?.Trim(),
                                                             postedData.Contact?.Trim(),
@@ -183,9 +236,23 @@ namespace OrganisationSetup.Areas.ApplicationConfiguration.Services
                                                             userInfo.BranchId,
                                                             userInfo.CompanyId,
                                                             con, transaction);
-                    await transaction.CommitAsync();
+                    #endregion
 
-                    return ServiceResult.success(Message.serverResponse(result), result.Value);
+                    #region PORTION FOR :: HANLDE TRANSACTION
+                    int? userResponse = ACUser.Value;
+                    switch (userResponse)
+                    {
+                        case (int)Code.Created:
+                        case (int)Code.Accepted:
+                            await transaction.CommitAsync();
+                            break;
+                        default:
+                            await transaction.RollbackAsync();
+                            break;
+                    }
+                    #endregion
+
+                    return ServiceResult.success(Message.serverResponse(userResponse), userResponse.Value);
                 }
                 catch (Exception ex)
                 {

@@ -79,7 +79,7 @@
                     <div class="col-sm-12 col-md-3">
                         <div class="form-group">
                             @Html.Label("TextBoxEmail", "Email", new { @class = "col-form-label" })
-                            @Html.TextBox("Email", null, new { @class = "form-control form-control-sm email", required = "required", placeholder = "Provide Email!", @id = "TextBoxEmail" })
+                            @Html.TextBox("Email", null, new { @class = "form-control form-control-sm email", placeholder = "Provide Email!", @id = "TextBoxEmail" })
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-3">
@@ -107,7 +107,13 @@
                     <div class="col-sm-12 col-md-3 d-flex align-items-center">
                         <div class="form-check mt-3">
                             @Html.Label("CheckBoxIsAutoChartOfAccount", "Auto Chart Of Account", new { @class = "form-check-label" })
-                            @Html.CheckBox("CheckBoxIsAutoChartOfAccount", true, new { @id = "CheckBoxIsAutoChartOfAccount", @class = "form-check-input" })
+                            @Html.CheckBox("CheckBoxIsAutoChartOfAccount", true, new { @id = "CheckBoxIsAutoChartOfAccount", disabled=true, @class = "form-check-input" })
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            @Html.Label("TextBoxOpeningBalance", "Opening Balance", new { @class = "col-form-label" })
+                            @Html.TextBox("OpeningBalance", 0.00, new { @class = "form-control form-control-sm numberOnly", placeholder = "Provide Opening Balance!", @id = "TextBoxOpeningBalance", type = "number", min = "0" })
                         </div>
                     </div>
                 </div>

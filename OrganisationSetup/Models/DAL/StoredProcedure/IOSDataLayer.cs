@@ -20,9 +20,9 @@ namespace OrganisationSetup.Models.DAL.StoredProcedure
         Task<int?> UpsertInto_ICategory(string? operationType, Guid? guId, string? description, int? departmentId, int? sectionId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
         Task<int?> UpsertInto_ISubCategory(string? operationType, Guid? guId, string? description, int? departmentId, int? sectionId, int? categoryId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
         Task<int?> UpsertInto_IBrand(string? operationType, Guid? guId,string? description, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
-        Task<int?> UpsertInto_IProduct(string? operationType, Guid? guId, string? description, string? machineNumber, string? sku, string? additionalDetail, string? attributeIds, int? brandId, bool? isFavorite, bool? isSaleTaxExclusive, int? departmentId, int? sectionId, int? categoryId, int? subCategoryId, decimal? criticalLimit, int? saleUnitId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
+        Task<(int? response, int? insertedId)> UpsertInto_IProduct(string? operationType, Guid? guId, string? description, string? machineNumber, string? sku, string? additionalDetail, string? attributeIds, int? brandId, bool? isFavorite, bool? isSaleTaxExclusive, int? departmentId, int? sectionId, int? categoryId, int? subCategoryId, decimal? criticalLimit, int? saleUnitId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
         Task<int?> UpsertInto_IProductATI(string? operationType, Guid? guId,  int? productId, int? inventoryAccountId, int? saleRevenueAccountId, int? costOfSaleAccountId, int? itemTypeId, int? hsCodeId, int? saleTaxTypeId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, SqlConnection con, SqlTransaction trans);
-        Task<int?> UpsertInto_SOCustomer(string? operationType, Guid? guId, string? description, string? contact, string? email, string? cnicNumber, string? address, string? additionalDetail, int? receivableAccountId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
+        Task<int?> UpsertInto_SOCustomer(string? operationType, Guid? guId, string? description, string? contact, string? email, string? cnicNumber, string? address, string? additionalDetail, int? receivableAccountId, decimal? openingBalance, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
         Task<int?> UpsertInto_AFChartOfAccount(string? operationType, Guid? guId,string? description,int? accountCategoryId,int? financialStatementId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans);
 
     }
@@ -228,7 +228,7 @@ namespace OrganisationSetup.Models.DAL.StoredProcedure
             await cmd.ExecuteNonQueryAsync();
             return responseParam.Value == DBNull.Value ? null : (int?)responseParam.Value;
         }
-        public async Task<int?> UpsertInto_IProduct(string? operationType, Guid? guId, string? description, string? machineNumber, string? sku, string? additionalDetail, string? attributeIds, int? brandId, bool? isFavorite, bool? isSaleTaxExclusive, int? departmentId, int? sectionId, int? categoryId, int? subCategoryId, decimal? criticalLimit, int? saleUnitId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans)
+        public async Task<(int? response, int? insertedId)> UpsertInto_IProduct(string? operationType, Guid? guId, string? description, string? machineNumber, string? sku, string? additionalDetail, string? attributeIds, int? brandId, bool? isFavorite, bool? isSaleTaxExclusive, int? departmentId, int? sectionId, int? categoryId, int? subCategoryId, decimal? criticalLimit, int? saleUnitId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans)
         {
             using var cmd = new SqlCommand("IProduct_Upsert", con, trans);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -258,12 +258,14 @@ namespace OrganisationSetup.Models.DAL.StoredProcedure
             cmd.Parameters.AddWithValue("@BranchId", (object?)branchId ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@CompanyId", (object?)companyId ?? DBNull.Value);
 
+            var InsertedIdParam = new SqlParameter("@InsertedId", SqlDbType.Int) { Direction = ParameterDirection.Output };
             var responseParam = new SqlParameter("@Response", SqlDbType.Int) { Direction = ParameterDirection.Output };
+            cmd.Parameters.Add(InsertedIdParam);
             cmd.Parameters.Add(responseParam);
 
             await cmd.ExecuteNonQueryAsync();
+            return (response: responseParam.Value == DBNull.Value ? null : (int?)responseParam.Value, insertedId: InsertedIdParam.Value == DBNull.Value ? null : (int?)InsertedIdParam.Value);
 
-            return responseParam.Value == DBNull.Value ? null : (int?)responseParam.Value;
         }
         public async Task<int?> UpsertInto_IProductATI(string? operationType, Guid? guId,int? productId,int?inventoryAccountId,int?saleRevenueAccountId,int? costOfSaleAccountId,int? itemTypeId,int? hsCodeId, int? saleTaxTypeId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, SqlConnection con, SqlTransaction trans)
         {
@@ -291,19 +293,20 @@ namespace OrganisationSetup.Models.DAL.StoredProcedure
             await cmd.ExecuteNonQueryAsync();
             return responseParam.Value == DBNull.Value ? null : (int?)responseParam.Value;
         }
-        public async Task<int?> UpsertInto_SOCustomer(string? operationType, Guid? guId, string? description, string? contact, string? email, string? cnicNumber, string? address, string? additionalDetail, int? receivableAccountId, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans)
+        public async Task<int?> UpsertInto_SOCustomer(string? operationType, Guid? guId, string? description, string? contact, string? email, string? cnicNumber, string? address, string? additionalDetail, int? receivableAccountId, decimal? openingBalance, DateTime? createdOn, int? createdBy, DateTime? updatedOn, int? updatedBy, int? documentType, int? documentStatus, int? branchId, int? companyId, SqlConnection con, SqlTransaction trans)
         {
             using var cmd = new SqlCommand("SOCustomer_Upsert", con, trans);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@DB_OperationType", (object)operationType! ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@GuID", (object)guId! ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@Description", (object)description! ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@Contact", (object)contact! ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@Email", (object)email! ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@CNICNumber", (object)cnicNumber! ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@Address", (object)address! ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@AdditionalDetail", (object)additionalDetail! ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Description", (object?)description ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Contact", (object?)contact ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Email", (object?)email ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@CNICNumber", (object?)cnicNumber ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Address", (object?)address ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@AdditionalDetail", (object?)additionalDetail ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@ReceivableAccountId", (object)receivableAccountId! ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@OpeningBalance", (object)openingBalance! ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@CreatedOn", (object)createdOn! ?? DateTime.Now);
             cmd.Parameters.AddWithValue("@CreatedBy", (object?)createdBy! ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@UpdatedOn", (object?)updatedOn! ?? DateTime.Now);

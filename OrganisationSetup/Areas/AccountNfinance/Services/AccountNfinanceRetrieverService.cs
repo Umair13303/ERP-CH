@@ -55,18 +55,6 @@ namespace OrganisationSetup.Areas.AccountNfinance.Services
                             GuID = x.GuID,
                             Description = x.Description
                         }).ToListAsync();
-                case ((int?)FilterConditions.afChartOfAccount_Operation_ByDefaultSetting):
-                    return await _eRPOSContext.AFChartOfAccount.AsNoTracking()
-                        .Where(x =>
-                        x.CompanyId == userInfo.CompanyId
-                        && x.AccountCategoryId == accountCatagoryId
-                        && x.Status == true
-                        && documentStatusIds.Contains(x.DocumentStatus)).Select(x => new AFChartOfAccount
-                        {
-                            Id = x.Id,
-                            GuID = x.GuID,
-                            Description = x.Description
-                        }).ToListAsync();
                 default:
                     return new List<AFChartOfAccount>();
             }
